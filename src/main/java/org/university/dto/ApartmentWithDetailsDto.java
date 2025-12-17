@@ -1,6 +1,5 @@
-package org.university.entity;
+package org.university.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -13,13 +12,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "apartment")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Apartment extends BaseEntity{
+public class ApartmentWithDetailsDto {
+    @NotNull(message = "Apartment id cannot be null")
+    private Long id;
+
     @NotBlank(message = "Apartment number cannot be blank")
     private String number;
 
@@ -27,11 +27,7 @@ public class Apartment extends BaseEntity{
     @PositiveOrZero(message = "Apartment area cannot be negative")
     private BigDecimal area;
 
-    // List of residents
-    @OneToMany(mappedBy = "apartment")
-    private List<Resident> residentList = new ArrayList<>();
+    private Long buildingId;
 
-    // Building
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Building building;
+    private List<Long> residentIdsList = new ArrayList<>();
 }

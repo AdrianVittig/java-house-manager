@@ -1,33 +1,23 @@
-package org.university.entity;
+package org.university.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-@Table(name = "company")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Company extends BaseEntity{
+public class CompanyListDto {
+    @NotNull(message = "Company id cannot be null")
+    private Long id;
     @NotBlank(message = "Company name cannot be blank")
     private String name;
     @NotNull(message = "Company revenue cannot be null")
     private BigDecimal revenue;
-
-    // Employees
-    @OneToMany(mappedBy = "company")
-    private List<Employee> employeeList = new ArrayList<>();
 }

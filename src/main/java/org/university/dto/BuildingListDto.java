@@ -1,26 +1,21 @@
-package org.university.entity;
+package org.university.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "building")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Building extends BaseEntity{
+public class BuildingListDto {
+    @NotNull(message = "Building id cannot be null")
+    private Long id;
     @NotBlank(message = "Building name cannot be blank")
     private String name;
     @NotNull(message = "Count of floors cannot be null")
@@ -31,16 +26,4 @@ public class Building extends BaseEntity{
     private int apartmentsPerFloor;
     @NotNull(message = "Built date cannot be null")
     private LocalDate builtDate;
-
-    // Employee
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Employee employee;
-
-    // Apartments
-    @OneToMany(mappedBy = "building")
-    private List<Apartment> apartmentList = new ArrayList<>();
-
-    // Contract
-    @OneToOne
-    private Contract contract;
 }
