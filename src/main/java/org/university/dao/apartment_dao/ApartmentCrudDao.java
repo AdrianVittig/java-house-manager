@@ -5,6 +5,7 @@ import org.hibernate.Transaction;
 import org.university.configuration.SessionFactoryUtil;
 import org.university.entity.Apartment;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class ApartmentCrudDao {
                     "LEFT JOIN FETCH a.residentList " +
                             "WHERE a.id = :id", Apartment.class)
                     .setParameter("id", id)
-                    .uniqueResult();
+                    .getResultList().stream().findFirst().orElse(null);
         }catch(Exception e){
             throw new DAOException("Error while getting apartment with id: " + id, e);
         } finally{
@@ -64,7 +65,7 @@ public class ApartmentCrudDao {
             transaction = session.beginTransaction();
             Apartment updatedApartment = session.find(Apartment.class, id);
             if(updatedApartment == null){
-                throw new DAOException("Apartment with id " + id + " does not exist", null);
+                throw new NotFoundException("Apartment with id " + id + " does not exist");
             }
             updatedApartment.setNumber(apartment.getNumber());
             updatedApartment.setArea(apartment.getArea());
@@ -86,7 +87,7 @@ public class ApartmentCrudDao {
             transaction = session.beginTransaction();
             Apartment apartment = session.find(Apartment.class, id);
             if(apartment == null){
-                throw new DAOException("Apartment with id " + id + " does not exist", null);
+                throw new NotFoundException("Apartment with id " + id + " does not exist");
             }
             session.remove(apartment);
             transaction.commit();

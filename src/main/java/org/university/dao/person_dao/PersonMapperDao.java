@@ -4,7 +4,7 @@ import org.university.dto.PersonDto;
 import org.university.entity.Person;
 
 public class PersonMapperDao {
-    public PersonDto toListDto(Person person){
+    public PersonDto toDto(Person person){
         PersonDto personDto = new PersonDto();
         personDto.setId(person.getId());
         personDto.setFirstName(person.getFirstName());

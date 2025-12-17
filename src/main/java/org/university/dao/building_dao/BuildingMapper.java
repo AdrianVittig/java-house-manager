@@ -9,6 +9,9 @@ public class BuildingMapper {
         BuildingListDto buildingListDto = new BuildingListDto();
         buildingListDto.setId(building.getId());
         buildingListDto.setName(building.getName());
+        buildingListDto.setAddress(building.getAddress());
+        buildingListDto.setBuiltUpArea(building.getBuiltUpArea());
+        buildingListDto.setCommonAreasPercentageOfBuiltUpArea(building.getCommonAreasPercentageOfBuiltUpArea());
         buildingListDto.setCountOfFloors(building.getCountOfFloors());
         buildingListDto.setApartmentsPerFloor(building.getApartmentsPerFloor());
         buildingListDto.setBuiltDate(building.getBuiltDate());
@@ -19,6 +22,9 @@ public class BuildingMapper {
         BuildingsWithDetailsDto buildingsWithDetailsDto = new BuildingsWithDetailsDto();
         buildingsWithDetailsDto.setId(building.getId());
         buildingsWithDetailsDto.setName(building.getName());
+        buildingsWithDetailsDto.setAddress(building.getAddress());
+        buildingsWithDetailsDto.setBuiltUpArea(building.getBuiltUpArea());
+        buildingsWithDetailsDto.setCommonAreasPercentageOfBuiltUpArea(building.getCommonAreasPercentageOfBuiltUpArea());
         buildingsWithDetailsDto.setCountOfFloors(building.getCountOfFloors());
         buildingsWithDetailsDto.setApartmentsPerFloor(building.getApartmentsPerFloor());
         buildingsWithDetailsDto.setBuiltDate(building.getBuiltDate());

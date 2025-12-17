@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,14 @@ public class BuildingsWithDetailsDto {
     private Long id;
     @NotBlank(message = "Building name cannot be blank")
     private String name;
+    @NotBlank(message = "Address cannot be blank")
+    private String address;
+    @NotNull(message = "Built up area cannot be null")
+    @PositiveOrZero(message = "Built up area cannot be negative")
+    private BigDecimal builtUpArea;
+    @NotNull(message = "Common areas percentage of built up area cannot be null")
+    @PositiveOrZero(message = "Common areas percentage of built up area cannot be negative")
+    private BigDecimal commonAreasPercentageOfBuiltUpArea;
     @NotNull(message = "Count of floors cannot be null")
     @PositiveOrZero(message = "Count of floors cannot be negative")
     private int countOfFloors;

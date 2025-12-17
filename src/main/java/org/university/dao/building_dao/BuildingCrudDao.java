@@ -62,8 +62,11 @@ public class BuildingCrudDao {
                 throw new NotFoundException("Building with id " + id + " does not exist");
             }
             updatedBuilding.setName(building.getName());
+            updatedBuilding.setAddress(building.getAddress());
             updatedBuilding.setApartmentsPerFloor(building.getApartmentsPerFloor());
             updatedBuilding.setCountOfFloors(building.getCountOfFloors());
+            updatedBuilding.setBuiltUpArea(building.getBuiltUpArea());
+            updatedBuilding.setCommonAreasPercentageOfBuiltUpArea(building.getCommonAreasPercentageOfBuiltUpArea());
             updatedBuilding.setBuiltDate(building.getBuiltDate());
             transaction.commit();
         }catch(Exception e){
