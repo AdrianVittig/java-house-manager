@@ -1,14 +1,8 @@
 package org.university.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.university.util.ResidentRole;
 
 @Entity
@@ -19,6 +13,7 @@ import org.university.util.ResidentRole;
 @AllArgsConstructor
 public class Resident extends Person{
     @NotNull(message = "Resident role cannot be null")
+    @Enumerated(EnumType.STRING)
     private ResidentRole role;
 
     @NotNull(message = "Has pet cannot be null")

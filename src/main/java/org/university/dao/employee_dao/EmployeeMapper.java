@@ -1,5 +1,6 @@
 package org.university.dao.employee_dao;
 
+import org.university.dto.EmployeeBuildingsManagementDto;
 import org.university.dto.EmployeeListDto;
 import org.university.dto.EmployeeWithDetailsDto;
 import org.university.entity.Contract;
@@ -36,5 +37,15 @@ public class EmployeeMapper {
             employeeWithDetailsDto.setBuildingIdsList(employee.getBuildingList().stream().map(building -> building.getId()).toList());
         }
         return employeeWithDetailsDto;
+    }
+
+    public EmployeeBuildingsManagementDto employeeToAllocationDto(Employee employee){
+        EmployeeBuildingsManagementDto employeeBuildingsManagementDto = new EmployeeBuildingsManagementDto();
+        employeeBuildingsManagementDto.setId(employee.getId());
+        employeeBuildingsManagementDto.setFirstName(employee.getFirstName());
+        employeeBuildingsManagementDto.setLastName(employee.getLastName());
+        employeeBuildingsManagementDto.setAge(employee.getAge());
+        employeeBuildingsManagementDto.setContractsCount(employee.getContractList().size());
+        return employeeBuildingsManagementDto;
     }
 }

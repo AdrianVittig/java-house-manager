@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.university.configuration.SessionFactoryUtil;
 import org.university.entity.Building;
+import org.university.entity.Employee;
 import org.university.exception.DAOException;
 import org.university.exception.NotFoundException;
 
@@ -74,6 +75,29 @@ public class BuildingCrudDao {
             throw new DAOException("Error while updating building with id: " + id, e);
         } finally{
             if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+    public void updateBuildingEmployee(Long buildingId, Employee employee){
+        Session session = null;
+        Transaction tx = null;
+        try {
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+
+            Building managed = session.find(Building.class, buildingId);
+            if (managed == null) {
+                throw new NotFoundException("Building with id " + buildingId + " does not exist");
+            }
+
+            managed.setEmployee(employee);
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw new DAOException("Error while updating building employee for building id: " + buildingId, e);
+        } finally {
+            if (session != null && session.isOpen()) session.close();
         }
     }
 

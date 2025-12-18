@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BuildingsWithDetailsDto {
+public class BuildingWithDetailsDto {
     @NotNull(message = "Building id cannot be null")
     private Long id;
     @NotBlank(message = "Building name cannot be blank")

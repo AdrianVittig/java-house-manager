@@ -1,10 +1,7 @@
 package org.university.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,12 +28,14 @@ public class Building extends BaseEntity{
     private BigDecimal builtUpArea;
     @NotNull(message = "Common areas percentage of built up area cannot be null")
     @PositiveOrZero(message = "Common areas percentage of built up area cannot be negative")
+    @DecimalMin(value = "0.0", inclusive = false)
+    @DecimalMax(value = "1.0", inclusive = true)
     private BigDecimal commonAreasPercentageOfBuiltUpArea;
     @NotNull(message = "Count of floors cannot be null")
-    @PositiveOrZero(message = "Count of floors cannot be negative")
+    @Positive(message = "Count of floors cannot be negative")
     private int countOfFloors;
     @NotNull(message = "Apartments per floor cannot be null")
-    @PositiveOrZero(message = "Apartments per floor cannot be negative")
+    @Positive(message = "Apartments per floor cannot be negative")
     private int apartmentsPerFloor;
     @NotNull(message = "Built date cannot be null")
     private LocalDate builtDate;

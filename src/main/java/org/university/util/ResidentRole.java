@@ -2,5 +2,6 @@ package org.university.util;
 
 public enum ResidentRole {
     OWNER,
-    TENANT
+    TENANT,
+    FAMILY_MEMBER
 }

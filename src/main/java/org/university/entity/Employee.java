@@ -32,5 +32,5 @@ public class Employee extends Person{
 
     // Contract
     @OneToMany(mappedBy = "employee")
-    private List<Contract> contractList;
+    private List<Contract> contractList = new ArrayList<>();
 }

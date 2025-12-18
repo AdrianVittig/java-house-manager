@@ -3,7 +3,6 @@ package org.university.dao.employee_dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.university.configuration.SessionFactoryUtil;
-import org.university.entity.Contract;
 import org.university.entity.Employee;
 import org.university.exception.DAOException;
 import org.university.exception.NotFoundException;
@@ -48,6 +47,73 @@ public class EmployeeCrudDao {
             throw new DAOException("Error while getting all employees: ", e);
         } finally{
             if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+    public Long getEmployeeIdWithLeastContracts(){
+        Session session = null;
+        try{
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            return session.createQuery("SELECT e.id " +
+                    "FROM Employee e " +
+                    "LEFT JOIN e.contractList c " +
+                    "GROUP BY e.id " +
+                    "ORDER BY COUNT(c) ASC, e.id ASC",
+                            Long.class)
+                    .setMaxResults(1)
+                    .getSingleResult();
+        }catch(Exception e){
+            throw new DAOException("Error while getting employee id with fewest contracts: ", e);
+        }
+        finally{
+            if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+
+    public Employee getEmployeeWithRelations(Long employeeId){
+        Session session = null;
+        try{
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            return session.createQuery("SELECT DISTINCT e " +
+                    "FROM Employee e " +
+                    "LEFT JOIN FETCH e.contractList " +
+                    "WHERE e.id = :id",
+                    Employee.class)
+                    .setParameter("id", employeeId)
+                    .getSingleResult();
+        }catch(Exception e){
+            throw new DAOException("Error while getting employee with relations: ", e);
+        }finally{
+            if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+    public Long getEmployeeIdWithLeastContractsExcluding(Long excludedEmployeeId, Long companyId) {
+        Session session = null;
+        try {
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+
+            List<Long> ids = session.createQuery(
+                            "SELECT e.id " +
+                                    "FROM Employee e " +
+                                    "LEFT JOIN e.contractList c " +
+                                    "WHERE e.id <> :excludedId AND e.company.id = :companyId " +
+                                    "GROUP BY e.id " +
+                                    "ORDER BY COUNT(c) ASC, e.id ASC",
+                            Long.class
+                    )
+                    .setParameter("excludedId", excludedEmployeeId)
+                    .setParameter("companyId", companyId)
+                    .setMaxResults(1)
+                    .getResultList();
+
+            return ids.isEmpty() ? null : ids.get(0);
+
+        } catch (Exception e) {
+            throw new DAOException("Error while getting employee id with fewest contracts (excluding): ", e);
+        } finally {
+            if (session != null && session.isOpen()) session.close();
         }
     }
 

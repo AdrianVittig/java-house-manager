@@ -24,7 +24,7 @@ import java.util.List;
 public class Company extends BaseEntity{
     @NotBlank(message = "Company name cannot be blank")
     private String name;
-    @NotNull(message = "Company revenue cannot be null")
+
     private BigDecimal revenue;
 
     // Employees

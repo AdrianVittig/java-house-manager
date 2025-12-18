@@ -56,6 +56,20 @@ public class ApartmentCrudDao {
         }
     }
 
+    public long getCountOfApartmentsByBuildingId(Long buildingId){
+        Session session = null;
+        try{
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            return session.createQuery("SELECT COUNT(a) FROM Apartment a WHERE a.building.id = :buildingId", Long.class)
+                    .setParameter("buildingId", buildingId)
+                    .getSingleResult();
+        }catch(Exception e){
+            throw new DAOException("Error while getting count of apartments by building id: " + buildingId, e);
+        }finally{
+            if(session != null && session.isOpen()) session.close();
+        }
+    }
+
     public void updateApartment(Long id, Apartment apartment){
         Session session = null;
         Transaction transaction = null;
@@ -67,9 +81,7 @@ public class ApartmentCrudDao {
             if(updatedApartment == null){
                 throw new NotFoundException("Apartment with id " + id + " does not exist");
             }
-            updatedApartment.setNumber(apartment.getNumber());
             updatedApartment.setArea(apartment.getArea());
-            updatedApartment.setBuilding(apartment.getBuilding());
             transaction.commit();
         }catch(Exception e){
             if(transaction != null) transaction.rollback();

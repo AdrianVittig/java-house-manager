@@ -2,6 +2,7 @@ package org.university.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Contract extends BaseEntity{
-    @NotBlank(message = "Contract number cannot be blank")
     private String number;
-    @NotBlank(message = "Contract issue date cannot be blank")
+
+    @PastOrPresent(message = "Contract issue date cannot be in the future")
     private LocalDate issueDate;
-    @NotBlank(message = "Contract end date cannot be blank")
+
     private LocalDate endDate;
 
     // Building

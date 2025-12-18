@@ -20,7 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Apartment extends BaseEntity{
-    @NotBlank(message = "Apartment number cannot be blank")
     private String number;
 
     @NotNull(message = "Apartment area cannot be null")

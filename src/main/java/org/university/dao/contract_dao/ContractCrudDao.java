@@ -50,6 +50,37 @@ public class ContractCrudDao {
         }
     }
 
+    public boolean existsByBuildingId(Long buildingId){
+        Session session = null;
+        try{
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            Long count = session.createQuery("SELECT COUNT(c) FROM Contract c WHERE c.building.id = :buildingId", Long.class)
+                    .setParameter("buildingId", buildingId)
+                    .getSingleResult();
+
+            return count > 0;
+        }catch(Exception e){
+            throw new DAOException("Error while checking if contract exists by building id: " + buildingId, e);
+        }finally {
+            if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+    public long getCountOfContracts(){
+        Session session = null;
+        try{
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            return session.createQuery("SELECT COUNT(c) FROM Contract c", Long.class)
+                    .getSingleResult();
+        }catch(Exception e){
+            throw new DAOException("Error while getting count of contracts: ", e);
+        }finally{
+            if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+
+
     public void updateContract(Long id, Contract contract){
         Session session = null;
         Transaction transaction = null;
@@ -64,6 +95,8 @@ public class ContractCrudDao {
             updatedContract.setNumber(contract.getNumber());
             updatedContract.setIssueDate(contract.getIssueDate());
             updatedContract.setEndDate(contract.getEndDate());
+            updatedContract.setEmployee(contract.getEmployee());
+            updatedContract.setBuilding(contract.getBuilding());
             transaction.commit();
         }catch(Exception e){
             if(transaction != null) transaction.rollback();

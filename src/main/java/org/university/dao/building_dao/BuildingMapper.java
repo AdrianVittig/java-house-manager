@@ -1,7 +1,7 @@
 package org.university.dao.building_dao;
 
 import org.university.dto.BuildingListDto;
-import org.university.dto.BuildingsWithDetailsDto;
+import org.university.dto.BuildingWithDetailsDto;
 import org.university.entity.Building;
 
 public class BuildingMapper {
@@ -18,28 +18,28 @@ public class BuildingMapper {
         return buildingListDto;
     }
 
-    public BuildingsWithDetailsDto toDetailsDto(Building building){
-        BuildingsWithDetailsDto buildingsWithDetailsDto = new BuildingsWithDetailsDto();
-        buildingsWithDetailsDto.setId(building.getId());
-        buildingsWithDetailsDto.setName(building.getName());
-        buildingsWithDetailsDto.setAddress(building.getAddress());
-        buildingsWithDetailsDto.setBuiltUpArea(building.getBuiltUpArea());
-        buildingsWithDetailsDto.setCommonAreasPercentageOfBuiltUpArea(building.getCommonAreasPercentageOfBuiltUpArea());
-        buildingsWithDetailsDto.setCountOfFloors(building.getCountOfFloors());
-        buildingsWithDetailsDto.setApartmentsPerFloor(building.getApartmentsPerFloor());
-        buildingsWithDetailsDto.setBuiltDate(building.getBuiltDate());
+    public BuildingWithDetailsDto toDetailsDto(Building building){
+        BuildingWithDetailsDto buildingWithDetailsDto = new BuildingWithDetailsDto();
+        buildingWithDetailsDto.setId(building.getId());
+        buildingWithDetailsDto.setName(building.getName());
+        buildingWithDetailsDto.setAddress(building.getAddress());
+        buildingWithDetailsDto.setBuiltUpArea(building.getBuiltUpArea());
+        buildingWithDetailsDto.setCommonAreasPercentageOfBuiltUpArea(building.getCommonAreasPercentageOfBuiltUpArea());
+        buildingWithDetailsDto.setCountOfFloors(building.getCountOfFloors());
+        buildingWithDetailsDto.setApartmentsPerFloor(building.getApartmentsPerFloor());
+        buildingWithDetailsDto.setBuiltDate(building.getBuiltDate());
 
         if(building.getEmployee() != null){
-            buildingsWithDetailsDto.setEmployeeId(building.getEmployee().getId());
+            buildingWithDetailsDto.setEmployeeId(building.getEmployee().getId());
         }
 
         if(building.getApartmentList() != null){
-            buildingsWithDetailsDto.setApartmentIdsList(building.getApartmentList().stream().map(apartment -> apartment.getId()).toList());
+            buildingWithDetailsDto.setApartmentIdsList(building.getApartmentList().stream().map(apartment -> apartment.getId()).toList());
         }
 
         if(building.getContract() != null){
-            buildingsWithDetailsDto.setContractId(building.getContract().getId());
+            buildingWithDetailsDto.setContractId(building.getContract().getId());
         }
-        return buildingsWithDetailsDto;
+        return buildingWithDetailsDto;
     }
 }
