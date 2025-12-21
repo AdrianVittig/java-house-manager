@@ -12,7 +12,7 @@ public class ApartmentMapper {
         apartmentListDto.setId(apartment.getId());
         apartmentListDto.setNumber(apartment.getNumber());
         apartmentListDto.setArea(apartment.getArea());
-
+        apartmentListDto.setHasPet(apartment.isHasPet());
         return apartmentListDto;
     }
 
@@ -21,7 +21,7 @@ public class ApartmentMapper {
         apartmentWithDetailsDto.setId(apartment.getId());
         apartmentWithDetailsDto.setNumber(apartment.getNumber());
         apartmentWithDetailsDto.setArea(apartment.getArea());
-
+        apartmentWithDetailsDto.setHasPet(apartment.isHasPet());
         if(apartment.getBuilding() != null){
             apartmentWithDetailsDto.setBuildingId(apartment.getBuilding().getId());
         }

@@ -3,6 +3,7 @@ package org.university.dao.resident_dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.university.configuration.SessionFactoryUtil;
+import org.university.entity.Apartment;
 import org.university.entity.Person;
 import org.university.entity.Resident;
 import org.university.exception.DAOException;
@@ -17,11 +18,16 @@ public class ResidentCrudDao {
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
+            Apartment managed = session.find(Apartment.class, resident.getApartment().getId());
+            if(managed == null){
+                throw new NotFoundException("Apartment with id " + resident.getApartment().getId() + " does not exist");
+            }
+            resident.setApartment(managed);
             session.persist(resident);
             transaction.commit();
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
-            throw new DAOException("Error while creating resident: " + e, e);
+            throw new DAOException("Error while creating resident: ", e);
         }finally{
             if(session != null && session.isOpen()) session.close();
         }
@@ -39,13 +45,30 @@ public class ResidentCrudDao {
         }
     }
 
+    public Resident getResidentWithDetails(Long id) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "SELECT r FROM Resident r " +
+                                    "LEFT JOIN FETCH r.apartment a " +
+                                    "WHERE r.id = :id", Resident.class
+                    )
+                    .setParameter("id", id)
+                    .getResultList()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+        } catch (Exception e) {
+            throw new DAOException("Error while getting resident with details, id: " + id, e);
+        }
+    }
+
     public List<Resident> getAllResidents(){
         Session session = null;
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             return session.createQuery("SELECT r FROM Resident r", Resident.class).getResultList();
         }catch(Exception e){
-            throw new DAOException("Error while getting all residents: " + e, e);
+            throw new DAOException("Error while getting all residents: ", e);
         } finally{
             if(session != null && session.isOpen()) session.close();
         }
@@ -66,7 +89,7 @@ public class ResidentCrudDao {
             updatedResident.setLastName(resident.getLastName());
             updatedResident.setAge(resident.getAge());
             updatedResident.setRole(resident.getRole());
-            updatedResident.setHasPet(resident.isHasPet());
+            updatedResident.setUsesElevator(resident.isUsesElevator());
             transaction.commit();
         }catch(Exception e){
             if(transaction != null) transaction.rollback();

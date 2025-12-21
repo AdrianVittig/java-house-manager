@@ -54,6 +54,7 @@ public class EmployeeAllocationServiceImpl implements EmployeeAllocationService 
         contract.setEmployee(employeeWithLeastContracts);
         contract.setBuilding(building);
         contractCrudService.createContract(contract);
+        buildingDao.updateBuildingEmployee(buildingId, employeeWithLeastContracts);
 
         return employeeMapper.employeeToAllocationDto(employeeWithLeastContracts);
     }

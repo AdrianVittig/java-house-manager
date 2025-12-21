@@ -29,7 +29,7 @@ public class ResidentCrudServiceImpl implements ResidentCrudService {
 
     @Override
     public ResidentWithDetailsDto getResidentById(Long id) throws DAOException, NotFoundException {
-        Resident resident = residentDao.getResidentById(id);
+        Resident resident = residentDao.getResidentWithDetails(id);
         if(resident == null){
             throw new NotFoundException("Resident with id " + id + " does not exist");
         }
@@ -37,7 +37,7 @@ public class ResidentCrudServiceImpl implements ResidentCrudService {
     }
 
     @Override
-    public List<ResidentListDto> getAllPeople() {
+    public List<ResidentListDto> getAllResidents() {
         return residentDao.getAllResidents()
                 .stream()
                 .map(residentMapper::toListDto)

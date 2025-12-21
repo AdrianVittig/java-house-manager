@@ -3,6 +3,7 @@ package org.university.dao.building_dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.university.configuration.SessionFactoryUtil;
+import org.university.entity.Apartment;
 import org.university.entity.Building;
 import org.university.entity.Employee;
 import org.university.exception.DAOException;
@@ -75,6 +76,77 @@ public class BuildingCrudDao {
             throw new DAOException("Error while updating building with id: " + id, e);
         } finally{
             if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+    public Building getBuildingWithApartmentsAndEmployee(long id){
+        Session session = null;
+        try{
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            return session.createQuery(
+                    "SELECT DISTINCT b FROM Building b " +
+                            "LEFT JOIN FETCH b.employee " +
+                            "LEFT JOIN FETCH b.apartmentList a " +
+                            "WHERE b.id = :id ", Building.class
+                    )
+                    .setParameter("id", id)
+                    .getResultList().stream().findFirst().orElse(null);
+        }catch(Exception e){
+            throw new DAOException("Error while getting building with apartments and employee, id: " + id, e);
+        }
+        finally{
+            if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+    public Building getBuildingWithApartmentsAndResidents(long id) {
+        Session session = null;
+        try {
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+
+            Building building = session.createQuery(
+                            "SELECT DISTINCT b FROM Building b " +
+                                    "LEFT JOIN FETCH b.employee " +
+                                    "LEFT JOIN FETCH b.apartmentList a " +
+                                    "WHERE b.id = :id", Building.class
+                    )
+                    .setParameter("id", id)
+                    .getResultList().stream().findFirst().orElse(null);
+
+            if (building == null) {
+                return null;
+            }
+
+            session.createQuery(
+                            "SELECT DISTINCT a FROM Apartment a " +
+                                    "LEFT JOIN FETCH a.residentList r " +
+                                    "WHERE a.building.id = :id", Apartment.class
+                    )
+                    .setParameter("id", id)
+                    .getResultList();
+
+            return building;
+
+        } catch (Exception e) {
+            throw new DAOException("Error while getting building with apartments and residents, id: " + id, e);
+        } finally {
+            if (session != null && session.isOpen()) session.close();
+        }
+    }
+
+
+    public Building getBuildingWithDetails(Long id) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "SELECT DISTINCT b FROM Building b " +
+                                    "LEFT JOIN FETCH b.employee " +
+                                    "LEFT JOIN FETCH b.apartmentList " +
+                                    "LEFT JOIN FETCH b.contract " +
+                                    "WHERE b.id = :id", Building.class
+                    ).setParameter("id", id)
+                    .getResultList().stream().findFirst().orElse(null);
+        } catch (Exception e) {
+            throw new DAOException("Error while getting building details id=" + id, e);
         }
     }
 

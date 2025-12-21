@@ -29,7 +29,7 @@ public class BuildingListDto {
     private BigDecimal commonAreasPercentageOfBuiltUpArea;
     @NotNull(message = "Count of floors cannot be null")
     @PositiveOrZero(message = "Count of floors cannot be negative")
-    private int countOfFloors;
+    private Integer countOfFloors;
     @NotNull(message = "Apartments per floor cannot be null")
     @PositiveOrZero(message = "Apartments per floor cannot be negative")
     private int apartmentsPerFloor;

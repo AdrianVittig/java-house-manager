@@ -26,6 +26,9 @@ public class Apartment extends BaseEntity{
     @PositiveOrZero(message = "Apartment area cannot be negative")
     private BigDecimal area;
 
+    @NotNull(message = "Has pet cannot be null")
+    private boolean hasPet;
+
     // List of residents
     @OneToMany(mappedBy = "apartment")
     private List<Resident> residentList = new ArrayList<>();
@@ -33,4 +36,7 @@ public class Apartment extends BaseEntity{
     // Building
     @ManyToOne(fetch = FetchType.LAZY)
     private Building building;
+
+    @OneToMany(mappedBy = "apartment")
+    private List<Invoice> invoiceList = new ArrayList<>();
 }

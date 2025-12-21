@@ -19,5 +19,5 @@ public class PersonDto {
     @NotBlank(message = "Last name cannot be blank")
     private String lastName;
     @NotNull(message = "Age cannot be null")
-    private int age;
+    private Integer age;
 }

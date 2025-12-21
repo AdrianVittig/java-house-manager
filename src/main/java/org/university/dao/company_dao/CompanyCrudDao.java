@@ -38,6 +38,18 @@ public class CompanyCrudDao {
             if(session != null && session.isOpen()) session.close();
         }
     }
+    public Company getCompanyWithDetails(Long id) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "SELECT DISTINCT c FROM Company c " +
+                                    "LEFT JOIN FETCH c.employeeList " +
+                                    "WHERE c.id = :id", Company.class
+                    ).setParameter("id", id)
+                    .getResultList().stream().findFirst().orElse(null);
+        } catch (Exception e) {
+            throw new DAOException("Error while getting company details id=" + id, e);
+        }
+    }
 
     public List<Company> getAllCompanies(){
         Session session = null;

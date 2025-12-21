@@ -20,11 +20,10 @@ public class ResidentListDto {
     @NotBlank(message = "Last name cannot be blank")
     private String lastName;
     @NotNull(message = "Age cannot be null")
-    private int age;
+    private Integer age;
 
     @NotNull(message = "Resident role cannot be null")
     private ResidentRole role;
 
-    @NotNull(message = "Has pet cannot be null")
-    private boolean hasPet;
+    private boolean usesElevator;
 }

@@ -33,10 +33,10 @@ public class Building extends BaseEntity{
     private BigDecimal commonAreasPercentageOfBuiltUpArea;
     @NotNull(message = "Count of floors cannot be null")
     @Positive(message = "Count of floors cannot be negative")
-    private int countOfFloors;
+    private Integer countOfFloors;
     @NotNull(message = "Apartments per floor cannot be null")
     @Positive(message = "Apartments per floor cannot be negative")
-    private int apartmentsPerFloor;
+    private Integer apartmentsPerFloor;
     @NotNull(message = "Built date cannot be null")
     private LocalDate builtDate;
 

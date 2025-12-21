@@ -3,7 +3,9 @@ package org.university.dao.contract_dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.university.configuration.SessionFactoryUtil;
+import org.university.entity.Building;
 import org.university.entity.Contract;
+import org.university.entity.Employee;
 import org.university.exception.DAOException;
 import org.university.exception.NotFoundException;
 
@@ -16,6 +18,16 @@ public class ContractCrudDao {
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
+            Employee managedEmployee = session.find(Employee.class, contract.getEmployee().getId());
+            Building managedBuilding = session.find(Building.class, contract.getBuilding().getId());
+            if(managedEmployee == null){
+                throw new NotFoundException("Employee with id " + contract.getEmployee().getId() + " does not exist");
+            }
+            if(managedBuilding == null){
+                throw new NotFoundException("Building with id " + contract.getBuilding().getId() + " does not exist");
+            }
+            contract.setEmployee(managedEmployee);
+            contract.setBuilding(managedBuilding);
             session.persist(contract);
             transaction.commit();
         }catch(Exception e){
@@ -46,6 +58,24 @@ public class ContractCrudDao {
         }catch(Exception e){
             throw new DAOException("Error while getting all contracts: ", e);
         } finally{
+            if(session != null && session.isOpen()) session.close();
+        }
+    }
+
+    public Contract getContractWithDetails(Long id) {
+        Session session = null;
+        try {
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            return session.createQuery(
+                            "SELECT DISTINCT c FROM Contract c " +
+                                    "LEFT JOIN FETCH c.employee " +
+                                    "LEFT JOIN FETCH c.building " +
+                                    "WHERE c.id = :id", Contract.class
+                    ).setParameter("id", id)
+                    .getResultList().stream().findFirst().orElse(null);
+        } catch (Exception e) {
+            throw new DAOException("Error while getting contract details id=" + id, e);
+        }finally {
             if(session != null && session.isOpen()) session.close();
         }
     }

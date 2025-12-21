@@ -47,7 +47,7 @@ public class ContractCrudServiceImpl implements ContractCrudService {
 
     @Override
     public ContractWithDetailsDto getContractById(Long id) throws DAOException, NotFoundException {
-        Contract contract = contractDao.getContractById(id);
+        Contract contract = contractDao.getContractWithDetails(id);
         if(contract == null){
             throw new NotFoundException("Contract with id " + id + " does not exist");
         }

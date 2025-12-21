@@ -27,7 +27,12 @@ public class ApartmentWithDetailsDto {
     @PositiveOrZero(message = "Apartment area cannot be negative")
     private BigDecimal area;
 
+    @NotNull(message = "Has pet cannot be null")
+    private boolean hasPet;
+
     private Long buildingId;
 
     private List<Long> residentIdsList = new ArrayList<>();
+
+    private List<Long> invoiceIdsList = new ArrayList<>();
 }

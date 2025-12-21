@@ -12,7 +12,7 @@ public class ResidentMapper {
         residentListDto.setLastName(resident.getLastName());
         residentListDto.setAge(resident.getAge());
         residentListDto.setRole(resident.getRole());
-        residentListDto.setHasPet(resident.isHasPet());
+        residentListDto.setUsesElevator(resident.isUsesElevator());
         return residentListDto;
     }
 
@@ -23,8 +23,7 @@ public class ResidentMapper {
         residentWithDetailsDto.setLastName(resident.getLastName());
         residentWithDetailsDto.setAge(resident.getAge());
         residentWithDetailsDto.setRole(resident.getRole());
-        residentWithDetailsDto.setHasPet(resident.isHasPet());
-
+        residentWithDetailsDto.setUsesElevator(resident.isUsesElevator());
         if(resident.getApartment() != null){
             residentWithDetailsDto.setApartmentId(resident.getApartment().getId());
         }

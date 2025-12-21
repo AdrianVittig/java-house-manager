@@ -11,7 +11,7 @@ import java.util.List;
 public interface ResidentCrudService {
     void createResident(Resident resident) throws DAOException, NotFoundException;
     ResidentWithDetailsDto getResidentById(Long id) throws DAOException, NotFoundException;
-    List<ResidentListDto> getAllPeople();
+    List<ResidentListDto> getAllResidents();
     void updateResident(Resident resident) throws DAOException, NotFoundException;
     void deleteResident(Long id) throws DAOException, NotFoundException;
 }

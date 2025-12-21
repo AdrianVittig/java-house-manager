@@ -21,7 +21,7 @@ public class PersonCrudDao {
             transaction.commit();
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
-            throw new DAOException("Error while creating person: " + e, e);
+            throw new DAOException("Error while creating person: ", e);
         }finally{
             if(session != null && session.isOpen()) session.close();
         }
@@ -45,7 +45,7 @@ public class PersonCrudDao {
             session = SessionFactoryUtil.getSessionFactory().openSession();
             return session.createQuery("SELECT p FROM Person p", Person.class).getResultList();
         }catch(Exception e){
-            throw new DAOException("Error while getting all people: " + e, e);
+            throw new DAOException("Error while getting all people: ", e);
         } finally{
             if(session != null && session.isOpen()) session.close();
         }

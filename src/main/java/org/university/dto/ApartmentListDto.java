@@ -24,4 +24,7 @@ public class ApartmentListDto {
     @NotNull(message = "Apartment area cannot be null")
     @PositiveOrZero(message = "Apartment area cannot be negative")
     private BigDecimal area;
+
+    @NotNull(message = "Has pet cannot be null")
+    private boolean hasPet;
 }

@@ -35,7 +35,7 @@ public class BuildingWithDetailsDto {
     private int countOfFloors;
     @NotNull(message = "Apartments per floor cannot be null")
     @PositiveOrZero(message = "Apartments per floor cannot be negative")
-    private int apartmentsPerFloor;
+    private Integer apartmentsPerFloor;
     @NotNull(message = "Built date cannot be null")
     private LocalDate builtDate;
 

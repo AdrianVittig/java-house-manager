@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.university.configuration.SessionFactoryUtil;
 import org.university.entity.Apartment;
+import org.university.entity.Building;
 import org.university.exception.DAOException;
 import org.university.exception.NotFoundException;
 
@@ -17,6 +18,11 @@ public class ApartmentCrudDao {
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
+            Building managed = session.find(Building.class, apartment.getBuilding().getId());
+            if(managed == null){
+                throw new NotFoundException("Building with id " + apartment.getBuilding().getId() + " does not exist");
+            }
+            apartment.setBuilding(managed);
             session.persist(apartment);
             transaction.commit();
         }catch(Exception e){
@@ -70,6 +76,50 @@ public class ApartmentCrudDao {
         }
     }
 
+    public Apartment getApartmentWithResidents(Long id) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "SELECT DISTINCT a " +
+                                    "FROM Apartment a " +
+                                    "LEFT JOIN FETCH a.residentList r " +
+                                    "WHERE a.id = :id",
+                            Apartment.class
+                    )
+                    .setParameter("id", id)
+                    .getResultList()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+        } catch (Exception e) {
+            throw new DAOException("Error while getting apartment with residents, id: " + id, e);
+        }
+    }
+
+    public Apartment getApartmentWithBuildingAndEmployee(Long id) {
+        Session session = null;
+        try {
+            session = SessionFactoryUtil.getSessionFactory().openSession();
+            return session.createQuery(
+                            "SELECT DISTINCT a " +
+                                    "FROM Apartment a " +
+                                    "LEFT JOIN FETCH a.building b " +
+                                    "LEFT JOIN FETCH b.employee " +
+                                    "LEFT JOIN FETCH a.residentList " +
+                                    "WHERE a.id = :id",
+                            Apartment.class
+                    )
+                    .setParameter("id", id)
+                    .getResultList()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+        } catch (Exception e) {
+            throw new DAOException("Error while getting apartment with building and employee, id: " + id, e);
+        } finally {
+            if (session != null && session.isOpen()) session.close();
+        }
+    }
+
     public void updateApartment(Long id, Apartment apartment){
         Session session = null;
         Transaction transaction = null;
@@ -82,6 +132,7 @@ public class ApartmentCrudDao {
                 throw new NotFoundException("Apartment with id " + id + " does not exist");
             }
             updatedApartment.setArea(apartment.getArea());
+            updatedApartment.setHasPet(apartment.isHasPet());
             transaction.commit();
         }catch(Exception e){
             if(transaction != null) transaction.rollback();

@@ -16,10 +16,10 @@ public class Resident extends Person{
     @Enumerated(EnumType.STRING)
     private ResidentRole role;
 
-    @NotNull(message = "Has pet cannot be null")
-    private boolean hasPet;
-
     // Apartment
     @ManyToOne(fetch = FetchType.LAZY)
     private Apartment apartment;
+
+    // Uses elevator
+    private boolean usesElevator;
 }

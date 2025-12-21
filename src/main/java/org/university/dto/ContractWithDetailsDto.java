@@ -18,9 +18,9 @@ public class ContractWithDetailsDto {
     private Long id;
     @NotBlank(message = "Contract number cannot be blank")
     private String number;
-    @NotBlank(message = "Contract issue date cannot be blank")
+    @NotNull(message = "Contract issue date cannot be null")
     private LocalDate issueDate;
-    @NotBlank(message = "Contract end date cannot be blank")
+    @NotNull(message = "Contract end date cannot be null")
     private LocalDate endDate;
 
     private Long buildingId;

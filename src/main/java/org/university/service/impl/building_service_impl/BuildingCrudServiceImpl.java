@@ -43,7 +43,7 @@ public class BuildingCrudServiceImpl implements BuildingCrudService {
 
     @Override
     public BuildingWithDetailsDto getBuildingById(Long id) throws DAOException, NotFoundException {
-        Building building = buildingDao.getBuildingById(id);
+        Building building = buildingDao.getBuildingWithDetails(id);
         if(building == null){
             throw new NotFoundException("Building with id " + id + " does not exist");
         }

@@ -29,7 +29,7 @@ public class CompanyCrudServiceImpl implements CompanyCrudService {
 
     @Override
     public CompanyWithDetailsDto getCompanyById(Long id) throws DAOException, NotFoundException {
-        Company company = companyDao.getCompanyById(id);
+        Company company = companyDao.getCompanyWithDetails(id);
         if(company == null){
             throw new NotFoundException("Company with id " + id + " does not exist");
         }
