@@ -14,60 +14,59 @@ import org.university.service.contract.apartment_service.ApartmentCrudService;
 import java.util.List;
 
 public class ApartmentCrudServiceImpl implements ApartmentCrudService {
+
     private final ApartmentCrudDao apartmentDao = new ApartmentCrudDao();
     private final BuildingCrudDao buildingDao = new BuildingCrudDao();
     private final ApartmentMapper apartmentMapper = new ApartmentMapper();
+
     @Override
-    public void createApartment(Apartment apartment) throws DAOException, NotFoundException {
-        if(apartment == null){
+    public void createApartment(Apartment apartment) {
+        if (apartment == null) {
             throw new IllegalArgumentException("Apartment cannot be null");
         }
 
-        if(apartment.getBuilding() == null || apartment.getBuilding().getId() == null){
+        if (apartment.getBuilding() == null || apartment.getBuilding().getId() == null) {
             throw new IllegalArgumentException("Building cannot be null");
         }
 
-        if(apartment.getArea() == null){
+        if (apartment.getArea() == null) {
             throw new IllegalArgumentException("Apartment area cannot be null");
         }
 
         Long buildingId = apartment.getBuilding().getId();
         Building building = buildingDao.getBuildingById(buildingId);
 
-        if(building == null){
+        if (building == null) {
             throw new NotFoundException("Building with id " + buildingId + " does not exist");
         }
 
-        if(building.getApartmentsPerFloor() <= 0){
-            throw new IllegalArgumentException("Building with id " + buildingId + " does not have apartments per floor");
+        if (building.getApartmentsPerFloor() <= 0) {
+            throw new IllegalArgumentException("Invalid apartments per floor");
         }
 
-        if(building.getCountOfFloors() <= 0){
-            throw new IllegalArgumentException("Building with id " + buildingId + " does not have floors");
+        if (building.getCountOfFloors() <= 0) {
+            throw new IllegalArgumentException("Invalid floors count");
         }
 
-        long totalCountOfApartments = apartmentDao.getCountOfApartmentsByBuildingId(buildingId);
-        int apartmentsPerFloor = building.getApartmentsPerFloor();
-        int floor = (int) (totalCountOfApartments / apartmentsPerFloor) + 1;
+        long count = apartmentDao.getCountOfApartmentsByBuildingId(buildingId);
+        int floor = (int) (count / building.getApartmentsPerFloor()) + 1;
 
-        if(floor > building.getCountOfFloors()){
-            throw new IllegalArgumentException("No free apartments in building with id " + buildingId);
+        if (floor > building.getCountOfFloors()) {
+            throw new IllegalArgumentException("No free apartments");
         }
 
-        int indexOnFloor = (int) (totalCountOfApartments % apartmentsPerFloor) + 1;
-        int apartmentNumber = floor * 1000 + indexOnFloor;
-        String apNumberToString = String.valueOf("Room: "+ apartmentNumber);
+        int index = (int) (count % building.getApartmentsPerFloor()) + 1;
+        apartment.setNumber("Room: " + (floor * 1000 + index));
 
-        apartment.setBuilding(building);
-        apartment.setNumber(apNumberToString);
+        apartment.setBuilding(building); // 🔥 КЛЮЧОВО
         apartmentDao.createApartment(apartment);
     }
 
     @Override
-    public ApartmentWithDetailsDto getApartmentById(Long id) throws DAOException, NotFoundException {
+    public ApartmentWithDetailsDto getApartmentById(Long id) {
         Apartment apartment = apartmentDao.getApartmentById(id);
-        if(apartment == null){
-            throw new NotFoundException("Apartment with id " + id + " does not exist");
+        if (apartment == null) {
+            throw new NotFoundException("Apartment not found");
         }
         return apartmentMapper.toDetailsDto(apartment);
     }
@@ -81,20 +80,19 @@ public class ApartmentCrudServiceImpl implements ApartmentCrudService {
     }
 
     @Override
-    public void updateApartment(Apartment apartment) throws DAOException, NotFoundException {
-        if(apartment == null || apartment.getId() == null){
+    public void updateApartment(Apartment apartment) {
+        if (apartment == null || apartment.getId() == null) {
             throw new IllegalArgumentException("Apartment cannot be null");
         }
         apartmentDao.updateApartment(apartment.getId(), apartment);
     }
 
     @Override
-    public void deleteApartment(Long id) throws DAOException, NotFoundException {
-        ApartmentWithDetailsDto apartment = getApartmentById(id);
-        if(apartment == null){
-            throw new NotFoundException("Apartment with id " + id + " does not exist");
+    public void deleteApartment(Long id) {
+        Apartment apartment = apartmentDao.getApartmentById(id);
+        if (apartment == null) {
+            throw new NotFoundException("Apartment not found");
         }
-
         apartmentDao.deleteApartment(id);
     }
 }
