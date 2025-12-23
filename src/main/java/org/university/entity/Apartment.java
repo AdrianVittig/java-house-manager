@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.university.validators.ApartmentNumberRegex;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Apartment extends BaseEntity{
+    @NotBlank(message = "Apartment number cannot be blank")
+    @ApartmentNumberRegex
     private String number;
 
     @NotNull(message = "Apartment area cannot be null")

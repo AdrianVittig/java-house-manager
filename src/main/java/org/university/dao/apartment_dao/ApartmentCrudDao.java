@@ -82,6 +82,7 @@ public class ApartmentCrudDao {
                             "SELECT DISTINCT a " +
                                     "FROM Apartment a " +
                                     "LEFT JOIN FETCH a.residentList r " +
+                                    "LEFT JOIN FETCH r.apartment " +
                                     "WHERE a.id = :id",
                             Apartment.class
                     )
@@ -91,9 +92,10 @@ public class ApartmentCrudDao {
                     .findFirst()
                     .orElse(null);
         } catch (Exception e) {
-            throw new DAOException("Error while getting apartment with residents, id: " + id, e);
+            throw new DAOException("Error while getting apartment with residents", e);
         }
     }
+
 
     public Apartment getApartmentWithBuildingAndEmployee(Long id) {
         Session session = null;

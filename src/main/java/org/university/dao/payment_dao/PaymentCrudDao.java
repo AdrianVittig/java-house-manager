@@ -102,7 +102,9 @@ public class PaymentCrudDao {
                                     "LEFT JOIN FETCH p.invoice i " +
                                     "LEFT JOIN FETCH i.apartment a " +
                                     "LEFT JOIN FETCH a.building b " +
-                                    "WHERE p.invoice.id = :invoiceId ",
+                                    "LEFT JOIN FETCH b.employee e " +
+                                    "LEFT JOIN FETCH e.company c " +
+                                    "WHERE i.id = :invoiceId",
                             Payment.class
                     )
                     .setParameter("invoiceId", invoiceId)
