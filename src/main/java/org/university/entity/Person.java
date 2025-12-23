@@ -10,8 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.university.validators.NameRegex;
-import org.university.validators.ValidAgeRange;
 
 @Entity
 @Table(name = "person")
@@ -22,12 +20,9 @@ import org.university.validators.ValidAgeRange;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Person extends BaseEntity{
     @NotBlank(message = "First name cannot be blank")
-    @NameRegex
     private String firstName;
-    @NameRegex
     @NotBlank(message = "Last name cannot be blank")
     private String lastName;
     @NotNull(message = "Age cannot be null")
-    @ValidAgeRange
     private Integer age;
 }

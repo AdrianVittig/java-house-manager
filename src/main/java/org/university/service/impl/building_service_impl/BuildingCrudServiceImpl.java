@@ -16,8 +16,6 @@ public class BuildingCrudServiceImpl implements BuildingCrudService {
     private final BuildingCrudDao buildingDao = new BuildingCrudDao();
     private final ApartmentCrudDao apartmentDao = new ApartmentCrudDao();
     private final BuildingMapper buildingMapper = new BuildingMapper();
-
-
     @Override
     public void createBuilding(Building building) throws DAOException, NotFoundException {
         if(building == null){

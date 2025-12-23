@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.university.validators.NameRegex;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,7 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Building extends BaseEntity{
     @NotBlank(message = "Building name cannot be blank")
-    @NameRegex
     private String name;
     @NotBlank(message = "Address cannot be blank")
     private String address;
