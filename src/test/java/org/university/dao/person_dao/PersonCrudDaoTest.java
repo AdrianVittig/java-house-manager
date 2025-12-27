@@ -45,19 +45,19 @@ class PersonCrudDaoTest {
 
     @Test
     void createPerson_persists() {
-        Person person = persistPerson("Ivan", "Ivanov", 25);
+        Person person = persistPerson("Georgi", "Georgiev", 25);
         assertNotNull(person.getId());
     }
 
     @Test
     void getPersonById_returnsEntity() {
-        Person person = persistPerson("Ivan", "Ivanov", 25);
+        Person person = persistPerson("Maria", "Ivanov", 25);
 
         Person found = personCrudDao.getPersonById(person.getId());
 
         assertNotNull(found);
         assertEquals(person.getId(), found.getId());
-        assertEquals("Ivan", found.getFirstName());
+        assertEquals("Maria", found.getFirstName());
         assertEquals("Ivanov", found.getLastName());
         assertEquals(25, found.getAge());
     }
@@ -70,8 +70,8 @@ class PersonCrudDaoTest {
 
     @Test
     void getAllPeople_returnsList() {
-        persistPerson("Ivan", "Ivanov", 25);
-        persistPerson("Maria", "Petrova", 30);
+        persistPerson("Petar", "Petrov", 25);
+        persistPerson("Ivan", "Ivanov", 30);
 
         List<Person> people = personCrudDao.getAllPeople();
 
@@ -81,7 +81,7 @@ class PersonCrudDaoTest {
 
     @Test
     void updatePerson_updatesFields() {
-        Person person = persistPerson("Ivan", "Ivanov", 25);
+        Person person = persistPerson("Yordan", "Georgiev", 25);
 
         Person patchPerson = new Person();
         patchPerson.setFirstName("Georgi");

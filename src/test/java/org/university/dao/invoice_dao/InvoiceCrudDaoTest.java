@@ -30,8 +30,8 @@ class InvoiceCrudDaoTest {
     }
 
     @AfterEach
-    void cleanup(){
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+    void cleanup() {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             session.createQuery("DELETE FROM Payment").executeUpdate();
@@ -50,8 +50,8 @@ class InvoiceCrudDaoTest {
 
     private Building persistBuilding() {
         Building b = new Building();
-        b.setName("Test Building");
-        b.setAddress("Test Address");
+        b.setName("Building 1");
+        b.setAddress("Address 1");
         b.setBuiltUpArea(new BigDecimal("120"));
         b.setCommonAreasPercentageOfBuiltUpArea(new BigDecimal("0.2"));
         b.setCountOfFloors(3);
@@ -108,11 +108,10 @@ class InvoiceCrudDaoTest {
         return i;
     }
 
-
     @Test
     void createInvoice_persistsEntity() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
 
         Invoice i = createInvoiceForApartment(a, YearMonth.of(2021, 1));
 
@@ -127,7 +126,7 @@ class InvoiceCrudDaoTest {
     @Test
     void getInvoiceById_returnsEntityAndApartment() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
         Invoice i = createInvoiceForApartment(a, YearMonth.of(2021, 1));
 
         Invoice found = invoiceCrudDao.getInvoiceById(i.getId());
@@ -147,7 +146,7 @@ class InvoiceCrudDaoTest {
     @Test
     void getInvoicesByApartment_returnsInvoicesOrderedByBillingMonthDesc() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1001");
+        Apartment a = persistApartment(b, "Apartment 1");
 
         createInvoiceForApartment(a, YearMonth.of(2025, 1));
         createInvoiceForApartment(a, YearMonth.of(2025, 3));
@@ -165,8 +164,8 @@ class InvoiceCrudDaoTest {
     @Test
     void getInvoicesByBuilding_returnsInvoices() {
         Building b = persistBuilding();
-        Apartment a1 = persistApartment(b, "1001");
-        Apartment a2 = persistApartment(b, "1002");
+        Apartment a1 = persistApartment(b, "Apartment 1");
+        Apartment a2 = persistApartment(b, "Apartment 2");
 
         createInvoiceForApartment(a1, YearMonth.of(2025, 5));
         createInvoiceForApartment(a2, YearMonth.of(2025, 5));
@@ -182,8 +181,8 @@ class InvoiceCrudDaoTest {
     @Test
     void getAllInvoices_returnsList() {
         Building b = persistBuilding();
-        Apartment a1 = persistApartment(b, "1001");
-        Apartment a2 = persistApartment(b, "1002");
+        Apartment a1 = persistApartment(b, "Apartment 1");
+        Apartment a2 = persistApartment(b, "Apartment 2");
 
         createInvoiceForApartment(a1, YearMonth.of(2025, 1));
         createInvoiceForApartment(a2, YearMonth.of(2025, 1));
@@ -197,7 +196,7 @@ class InvoiceCrudDaoTest {
     @Test
     void getInvoiceByApartmentAndMonth_returnsInvoice() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
         createInvoiceForApartment(a, YearMonth.of(2021, 1));
 
         Invoice toFind = createInvoiceForApartment(a, YearMonth.of(2021, 2));
@@ -212,7 +211,7 @@ class InvoiceCrudDaoTest {
     @Test
     void getInvoiceWithDetails_returnsEntity() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
         Invoice i = createInvoiceForApartment(a, YearMonth.of(2021, 1));
 
         Invoice found = invoiceCrudDao.getInvoiceWithDetails(i.getId());
@@ -226,8 +225,8 @@ class InvoiceCrudDaoTest {
     @Test
     void getInvoicesByBuildingAndMonth_returnsOnlyThatMonth() {
         Building b = persistBuilding();
-        Apartment a1 = persistApartment(b, "1000");
-        Apartment a2 = persistApartment(b, "1001");
+        Apartment a1 = persistApartment(b, "Apartment 1");
+        Apartment a2 = persistApartment(b, "Apartment 2");
 
         createInvoiceForApartment(a1, YearMonth.of(2021, 1));
         createInvoiceForApartment(a2, YearMonth.of(2021, 2));
@@ -256,7 +255,7 @@ class InvoiceCrudDaoTest {
     @Test
     void deleteInvoice_deletesEntity() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1001");
+        Apartment a = persistApartment(b, "Apartment 1");
 
         Invoice i = createInvoiceForApartment(a, YearMonth.of(2025, 12));
 

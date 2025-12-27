@@ -18,7 +18,6 @@ class ApartmentCrudDaoTest {
 
     private static ApartmentCrudDao apartmentCrudDao;
 
-
     @BeforeAll
     static void setUp() {
         SessionFactoryUtil.getSessionFactory();
@@ -26,8 +25,8 @@ class ApartmentCrudDaoTest {
     }
 
     @AfterEach
-    void cleanup(){
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+    void cleanup() {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.createQuery("DELETE FROM Apartment").executeUpdate();
             session.createQuery("DELETE FROM Building").executeUpdate();
@@ -35,17 +34,17 @@ class ApartmentCrudDaoTest {
         }
     }
 
-    private Building persistBuilding(){
+    private Building persistBuilding() {
         Building b = new Building();
-        b.setName("Test Building");
-        b.setAddress("Test Address");
+        b.setName("Building 1");
+        b.setAddress("Address 1");
         b.setBuiltUpArea(new BigDecimal("120"));
         b.setCommonAreasPercentageOfBuiltUpArea(new BigDecimal("0.2"));
         b.setCountOfFloors(3);
         b.setApartmentsPerFloor(2);
         b.setBuiltDate(LocalDate.now());
 
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.persist(b);
             transaction.commit();
@@ -55,10 +54,10 @@ class ApartmentCrudDaoTest {
         return b;
     }
 
-    private Apartment persistApartment(Building b, String number){
+    private Apartment persistApartment(Building b, String number) {
         Apartment a = new Apartment();
         a.setNumber(number);
-        a.setArea(new  BigDecimal("70"));
+        a.setArea(new BigDecimal("70"));
         a.setHasPet(false);
         a.setBuilding(b);
 
@@ -70,17 +69,17 @@ class ApartmentCrudDaoTest {
     @Test
     void createApartment_persists() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
         assertNotNull(a.getId());
     }
 
     @Test
-    void createApartment_whenBuildingMissing_throwsDAOException(){
+    void createApartment_whenBuildingMissing_throwsDAOException() {
         Building testBuilding = new Building();
         testBuilding.setId(99999L);
 
         Apartment a = new Apartment();
-        a.setNumber("1000");
+        a.setNumber("Apartment 1");
         a.setArea(new BigDecimal("70"));
         a.setHasPet(false);
         a.setBuilding(testBuilding);
@@ -91,7 +90,7 @@ class ApartmentCrudDaoTest {
     @Test
     void getApartmentById_returnsEntity() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
 
         Apartment found = apartmentCrudDao.getApartmentById(a.getId());
 
@@ -100,7 +99,7 @@ class ApartmentCrudDaoTest {
     }
 
     @Test
-    void getApartmentById_whenMissing_thenReturnNull(){
+    void getApartmentById_whenMissing_thenReturnNull() {
         Apartment found = apartmentCrudDao.getApartmentById(89888888L);
         assertNull(found);
     }
@@ -108,8 +107,8 @@ class ApartmentCrudDaoTest {
     @Test
     void getAllApartments_returnsList() {
         Building b = persistBuilding();
-        persistApartment(b, "1001");
-        persistApartment(b, "1002");
+        persistApartment(b, "Apartment 1");
+        persistApartment(b, "Apartment 2");
 
         List<Apartment> apartments = apartmentCrudDao.getAllApartments();
 
@@ -120,8 +119,8 @@ class ApartmentCrudDaoTest {
     @Test
     void getCountOfApartmentsByBuildingId_returnsCorrectCount() {
         Building b = persistBuilding();
-        persistApartment(b, "1000");
-        persistApartment(b, "1001");
+        persistApartment(b, "Apartment 1");
+        persistApartment(b, "Apartment 2");
 
         long count = apartmentCrudDao.getCountOfApartmentsByBuildingId(b.getId());
 
@@ -131,7 +130,7 @@ class ApartmentCrudDaoTest {
     @Test
     void getApartmentWithResidents_returnsEntity() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
 
         Apartment found = apartmentCrudDao.getApartmentWithResidents(a.getId());
 
@@ -142,7 +141,7 @@ class ApartmentCrudDaoTest {
     @Test
     void getApartmentWithBuildingAndEmployee_returnsEntity() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
 
         Apartment found = apartmentCrudDao.getApartmentWithBuildingAndEmployee(a.getId());
 
@@ -155,7 +154,7 @@ class ApartmentCrudDaoTest {
     @Test
     void updateApartment_updatesFields() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
 
         Apartment newApartment = new Apartment();
         newApartment.setArea(new BigDecimal("80"));
@@ -174,7 +173,7 @@ class ApartmentCrudDaoTest {
     @Test
     void deleteApartment() {
         Building b = persistBuilding();
-        Apartment a = persistApartment(b, "1000");
+        Apartment a = persistApartment(b, "Apartment 1");
 
         apartmentCrudDao.deleteApartment(a.getId());
 

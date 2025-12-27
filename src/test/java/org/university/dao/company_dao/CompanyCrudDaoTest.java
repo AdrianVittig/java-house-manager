@@ -27,8 +27,8 @@ class CompanyCrudDaoTest {
     }
 
     @AfterEach
-    void cleanup(){
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+    void cleanup() {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             session.createQuery("DELETE FROM Employee").executeUpdate();
@@ -39,7 +39,7 @@ class CompanyCrudDaoTest {
         }
     }
 
-    private Company persistCompany(String name){
+    private Company persistCompany(String name) {
         Company c = new Company();
         c.setName(name);
         c.setRevenue(new BigDecimal("1000"));
@@ -49,15 +49,15 @@ class CompanyCrudDaoTest {
         return c;
     }
 
-    private Employee persistEmployeeForCompany(Company company){
+    private Employee persistEmployeeForCompany(Company company, String firstName, String lastName) {
         Employee e = new Employee();
-        e.setFirstName("Georgi");
-        e.setLastName("Georgiev");
+        e.setFirstName(firstName);
+        e.setLastName(lastName);
         e.setAge(30);
         e.setFeeCollectingDate(LocalDate.now());
         e.setCompany(company);
 
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             Company managedCompany = session.find(Company.class, company.getId());
@@ -74,48 +74,48 @@ class CompanyCrudDaoTest {
 
     @Test
     void createCompany_persistsEntity() {
-        Company c = persistCompany("Test Company");
+        Company c = persistCompany("Company 1");
         assertNotNull(c.getId());
     }
 
     @Test
     void getCompanyById_returnsEntity() {
-        Company c = persistCompany("Test Company");
+        Company c = persistCompany("Company 1");
 
         Company found = companyCrudDao.getCompanyById(c.getId());
         assertNotNull(found);
         assertEquals(c.getId(), found.getId());
-        assertEquals("Test Company", found.getName());
+        assertEquals("Company 1", found.getName());
     }
 
     @Test
-    void getCompanyById_whenMissing_returnsNull(){
+    void getCompanyById_whenMissing_returnsNull() {
         Company found = companyCrudDao.getCompanyById(89888888L);
         assertNull(found);
     }
 
     @Test
     void getCompanyWithDetails_returnsCompanyWithEmployees() {
-        Company c = persistCompany("Test Company");
-        persistEmployeeForCompany(c);
-        persistEmployeeForCompany(c);
+        Company c = persistCompany("Company 1");
+        persistEmployeeForCompany(c, "Georgi", "Georgiev");
+        persistEmployeeForCompany(c, "Maria", "Ivanov");
 
         Company found = companyCrudDao.getCompanyWithDetails(c.getId());
         assertNotNull(found);
-        assertEquals(2, found.getEmployeeList().size());
         assertNotNull(found.getEmployeeList());
+        assertEquals(2, found.getEmployeeList().size());
     }
 
     @Test
-    void getCompanyWithDetails_whenMissing_returnsNull(){
+    void getCompanyWithDetails_whenMissing_returnsNull() {
         Company found = companyCrudDao.getCompanyWithDetails(8988858888L);
         assertNull(found);
     }
 
     @Test
     void getAllCompanies_returnsList() {
-        persistCompany("Test Company 1");
-        persistCompany("Test Company 2");
+        persistCompany("Company 1");
+        persistCompany("Company 2");
 
         List<Company> companies = companyCrudDao.getAllCompanies();
         assertNotNull(companies);
@@ -124,9 +124,9 @@ class CompanyCrudDaoTest {
 
     @Test
     void updateCompany_updatesFields() {
-        Company c = persistCompany("Test Company");
+        Company c = persistCompany("Company 1");
         Company toUpdate = new Company();
-        toUpdate.setName("Updated Company");
+        toUpdate.setName("Company 2");
         toUpdate.setRevenue(new BigDecimal("30000.00"));
 
         companyCrudDao.updateCompany(c.getId(), toUpdate);
@@ -134,14 +134,14 @@ class CompanyCrudDaoTest {
         Company updated = companyCrudDao.getCompanyById(c.getId());
         assertNotNull(updated);
 
-        assertEquals("Updated Company", updated.getName());
+        assertEquals("Company 2", updated.getName());
         assertEquals(new BigDecimal("30000.00"), updated.getRevenue());
     }
 
     @Test
-    void updateCompany_whenMissing_throwsDAOException(){
+    void updateCompany_whenMissing_throwsDAOException() {
         Company c = new Company();
-        c.setName("Test Company");
+        c.setName("Company 1");
         c.setRevenue(new BigDecimal("1000"));
 
         assertThrows(DAOException.class, () -> companyCrudDao.updateCompany(89999898L, c));
@@ -149,7 +149,7 @@ class CompanyCrudDaoTest {
 
     @Test
     void deleteCompany_deletesEntity() {
-        Company c = persistCompany("Test Company");
+        Company c = persistCompany("Company 1");
         companyCrudDao.deleteCompany(c.getId());
 
         Company found = companyCrudDao.getCompanyById(c.getId());
@@ -157,7 +157,7 @@ class CompanyCrudDaoTest {
     }
 
     @Test
-    void deleteCompany_whenMissing_throwsDAOException(){
+    void deleteCompany_whenMissing_throwsDAOException() {
         assertThrows(DAOException.class, () -> companyCrudDao.deleteCompany(89999898L));
     }
 }

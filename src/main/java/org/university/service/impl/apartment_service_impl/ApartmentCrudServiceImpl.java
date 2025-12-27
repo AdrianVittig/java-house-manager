@@ -58,7 +58,7 @@ public class ApartmentCrudServiceImpl implements ApartmentCrudService {
         int index = (int) (count % building.getApartmentsPerFloor()) + 1;
         apartment.setNumber("Room: " + (floor * 1000 + index));
 
-        apartment.setBuilding(building); // 🔥 КЛЮЧОВО
+        apartment.setBuilding(building);
         apartmentDao.createApartment(apartment);
     }
 

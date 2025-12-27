@@ -22,29 +22,29 @@ class BuildingCrudDaoTest {
     private static BuildingCrudDao buildingCrudDao;
 
     @BeforeAll
-    static void setUp(){
+    static void setUp() {
         SessionFactoryUtil.getSessionFactory();
         buildingCrudDao = new BuildingCrudDao();
     }
 
     @AfterEach
-    void cleanUp(){
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+    void cleanUp() {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             session.createQuery("DELETE FROM Apartment").executeUpdate();
             session.createQuery("DELETE FROM Building").executeUpdate();
             session.createQuery("DELETE FROM Employee").executeUpdate();
-            session.createQuery("DELETE FROM Person ").executeUpdate();
+            session.createQuery("DELETE FROM Person").executeUpdate();
 
             transaction.commit();
         }
     }
 
-    private Building persistBuilding(){
+    private Building persistBuilding(String name, String address) {
         Building b = new Building();
-        b.setName("Test Building");
-        b.setAddress("Test Address");
+        b.setName(name);
+        b.setAddress(address);
         b.setBuiltUpArea(new BigDecimal("120"));
         b.setCommonAreasPercentageOfBuiltUpArea(new BigDecimal("0.2"));
         b.setCountOfFloors(3);
@@ -56,14 +56,14 @@ class BuildingCrudDaoTest {
         return b;
     }
 
-    private Employee persistEmployee(){
+    private Employee persistEmployee(String firstName, String lastName) {
         Employee e = new Employee();
-        e.setFirstName("Georgi");
-        e.setLastName("Georgiev");
+        e.setFirstName(firstName);
+        e.setLastName(lastName);
         e.setAge(30);
         e.setFeeCollectingDate(LocalDate.now());
 
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.persist(e);
             transaction.commit();
@@ -72,13 +72,13 @@ class BuildingCrudDaoTest {
         return e;
     }
 
-    private Apartment persistApartmentForBuilding(Building b, String number){
+    private Apartment persistApartmentForBuilding(Building b, String number) {
         Apartment a = new Apartment();
         a.setNumber(number);
         a.setArea(new BigDecimal("70"));
         a.setHasPet(false);
 
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             Building managed = session.find(Building.class, b.getId());
@@ -96,13 +96,13 @@ class BuildingCrudDaoTest {
 
     @Test
     void createBuilding_persists() {
-        Building b = persistBuilding();
+        Building b = persistBuilding("Building 1", "Address 1");
         assertNotNull(b.getId());
     }
 
     @Test
     void getBuildingById_returnsEntity() {
-        Building b = persistBuilding();
+        Building b = persistBuilding("Building 1", "Address 1");
 
         Building found = buildingCrudDao.getBuildingById(b.getId());
 
@@ -118,8 +118,8 @@ class BuildingCrudDaoTest {
 
     @Test
     void getAllBuildings_returnsList() {
-        persistBuilding();
-        persistBuilding();
+        persistBuilding("Building 1", "Address 1");
+        persistBuilding("Building 2", "Address 2");
 
         List<Building> buildingList = buildingCrudDao.getAllBuildings();
 
@@ -129,11 +129,11 @@ class BuildingCrudDaoTest {
 
     @Test
     void updateBuilding() {
-        Building b = persistBuilding();
+        Building b = persistBuilding("Building 1", "Address 1");
 
         Building toUpdateBuilding = new Building();
-        toUpdateBuilding.setName("Updated");
-        toUpdateBuilding.setAddress("Updated Address");
+        toUpdateBuilding.setName("Building 2");
+        toUpdateBuilding.setAddress("Address 2");
         toUpdateBuilding.setBuiltUpArea(new BigDecimal("200"));
         toUpdateBuilding.setCommonAreasPercentageOfBuiltUpArea(new BigDecimal("0.3"));
         toUpdateBuilding.setCountOfFloors(5);
@@ -145,8 +145,8 @@ class BuildingCrudDaoTest {
         Building updatedBuilding = buildingCrudDao.getBuildingById(b.getId());
         assertNotNull(updatedBuilding);
 
-        assertEquals("Updated", updatedBuilding.getName());
-        assertEquals("Updated Address", updatedBuilding.getAddress());
+        assertEquals("Building 2", updatedBuilding.getName());
+        assertEquals("Address 2", updatedBuilding.getAddress());
         assertEquals(0, updatedBuilding.getBuiltUpArea().compareTo(new BigDecimal("200")));
         assertEquals(0, updatedBuilding.getCommonAreasPercentageOfBuiltUpArea().compareTo(new BigDecimal("0.3")));
         assertEquals(5, updatedBuilding.getCountOfFloors());
@@ -155,10 +155,10 @@ class BuildingCrudDaoTest {
     }
 
     @Test
-    void updateBuilding_whenMissing_throwsDAOException(){
-        Building b = new  Building();
-        b.setName("Updated Name");
-        b.setAddress("Updated Address");
+    void updateBuilding_whenMissing_throwsDAOException() {
+        Building b = new Building();
+        b.setName("Building 2");
+        b.setAddress("Address 2");
         b.setBuiltUpArea(new BigDecimal("200"));
         b.setCommonAreasPercentageOfBuiltUpArea(new BigDecimal("0.3"));
         b.setCountOfFloors(5);
@@ -170,11 +170,11 @@ class BuildingCrudDaoTest {
 
     @Test
     void getBuildingWithApartmentsAndEmployee_thenReturnsEntityWithFetchedRelations() {
-        Building b = persistBuilding();
-        Apartment a = persistApartmentForBuilding(b, "1001");
-        Apartment a2 = persistApartmentForBuilding(b, "1002");
+        Building b = persistBuilding("Building 1", "Address 1");
+        persistApartmentForBuilding(b, "Apartment 1");
+        persistApartmentForBuilding(b, "Apartment 2");
 
-        Employee e = persistEmployee();
+        Employee e = persistEmployee("Georgi", "Georgiev");
         buildingCrudDao.updateBuildingEmployee(b.getId(), e);
 
         Building found = buildingCrudDao.getBuildingWithApartmentsAndEmployee(b.getId());
@@ -191,9 +191,9 @@ class BuildingCrudDaoTest {
 
     @Test
     void getBuildingWithApartmentsAndResidents_thenReturnsEntity() {
-        Building b = persistBuilding();
-        persistApartmentForBuilding(b, "1000");
-        persistApartmentForBuilding(b, "1001");
+        Building b = persistBuilding("Building 1", "Address 1");
+        persistApartmentForBuilding(b, "Apartment 1");
+        persistApartmentForBuilding(b, "Apartment 2");
 
         Building found = buildingCrudDao.getBuildingWithApartmentsAndResidents(b.getId());
 
@@ -201,13 +201,12 @@ class BuildingCrudDaoTest {
         assertEquals(b.getId(), found.getId());
         assertNotNull(found.getApartmentList());
         assertEquals(2, found.getApartmentList().size());
-
     }
 
     @Test
     void getBuildingWithDetails_returnsEntity() {
-        Building b = persistBuilding();
-        persistApartmentForBuilding(b, "1000");
+        Building b = persistBuilding("Building 1", "Address 1");
+        persistApartmentForBuilding(b, "Apartment 1");
 
         Building found = buildingCrudDao.getBuildingWithDetails(b.getId());
 
@@ -219,8 +218,8 @@ class BuildingCrudDaoTest {
 
     @Test
     void updateBuildingEmployee_setsEmployee() {
-        Building b = persistBuilding();
-        Employee e = persistEmployee();
+        Building b = persistBuilding("Building 1", "Address 1");
+        Employee e = persistEmployee("Maria", "Ivanov");
 
         buildingCrudDao.updateBuildingEmployee(b.getId(), e);
 
@@ -230,14 +229,15 @@ class BuildingCrudDaoTest {
         assertEquals(e.getId(), found.getEmployee().getId());
     }
 
-    void updateBuildingEmployee_whenMissingBuilding_throwsDAOException(){
-        Employee e = persistEmployee();
+    @Test
+    void updateBuildingEmployee_whenMissingBuilding_throwsDAOException() {
+        Employee e = persistEmployee("Petar", "Petrov");
         assertThrows(DAOException.class, () -> buildingCrudDao.updateBuildingEmployee(89999898L, e));
     }
 
     @Test
     void deleteBuilding_deletesEntity() {
-        Building b = persistBuilding();
+        Building b = persistBuilding("Building 1", "Address 1");
 
         buildingCrudDao.deleteBuilding(b.getId());
 
@@ -246,7 +246,7 @@ class BuildingCrudDaoTest {
     }
 
     @Test
-    void deleteBuilding_whenMissing_throwsDAOException(){
+    void deleteBuilding_whenMissing_throwsDAOException() {
         assertThrows(DAOException.class, () -> buildingCrudDao.deleteBuilding(89999898L));
     }
 }

@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,10 +52,43 @@ class PaymentCrudDaoTest {
         }
     }
 
-    private Building persistBuilding() {
+    private Company persistCompany(String name) {
+        Company company = new Company();
+        company.setName(name);
+        company.setRevenue(new BigDecimal("100000"));
+
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.persist(company);
+            transaction.commit();
+        }
+
+        assertNotNull(company.getId());
+        return company;
+    }
+
+    private Employee persistEmployee(Company company, String firstName, String lastName) {
+        Employee employee = new Employee();
+        employee.setFirstName(firstName);
+        employee.setLastName(lastName);
+        employee.setAge(30);
+        employee.setFeeCollectingDate(LocalDate.now());
+        employee.setCompany(company);
+
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.persist(employee);
+            transaction.commit();
+        }
+
+        assertNotNull(employee.getId());
+        return employee;
+    }
+
+    private Building persistBuilding(String name, String address) {
         Building building = new Building();
-        building.setName("Test Building");
-        building.setAddress("Test Address");
+        building.setName(name);
+        building.setAddress(address);
         building.setBuiltUpArea(new BigDecimal("120"));
         building.setCommonAreasPercentageOfBuiltUpArea(new BigDecimal("0.2"));
         building.setCountOfFloors(3);
@@ -95,6 +127,22 @@ class PaymentCrudDaoTest {
         return apartment;
     }
 
+    private void assignEmployeeToBuilding(Building building, Employee employee) {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            Building managedBuilding = session.find(Building.class, building.getId());
+            Employee managedEmployee = session.find(Employee.class, employee.getId());
+
+            assertNotNull(managedBuilding);
+            assertNotNull(managedEmployee);
+
+            managedBuilding.setEmployee(managedEmployee);
+
+            transaction.commit();
+        }
+    }
+
     private Invoice persistInvoice(Apartment apartment, YearMonth billingMonth, BigDecimal totalAmount, PaymentStatus paymentStatus) {
         Invoice invoice = new Invoice();
 
@@ -124,59 +172,10 @@ class PaymentCrudDaoTest {
         return payment;
     }
 
-    private Company persistCompany() {
-        Company company = new Company();
-        company.setName("Test Company");
-        company.setRevenue(new BigDecimal("100000"));
-
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            session.persist(company);
-            transaction.commit();
-        }
-
-        assertNotNull(company.getId());
-        return company;
-    }
-
-    private Employee persistEmployee(Company company) {
-        Employee employee = new Employee();
-        employee.setFirstName("Ivan");
-        employee.setLastName("Ivanov");
-        employee.setAge(30);
-        employee.setFeeCollectingDate(LocalDate.now());
-        employee.setCompany(company);
-
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            session.persist(employee);
-            transaction.commit();
-        }
-
-        assertNotNull(employee.getId());
-        return employee;
-    }
-
-    private void assignEmployeeToBuilding(Building building, Employee employee) {
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-
-            Building managedBuilding = session.find(Building.class, building.getId());
-            Employee managedEmployee = session.find(Employee.class, employee.getId());
-
-            assertNotNull(managedBuilding);
-            assertNotNull(managedEmployee);
-
-            managedBuilding.setEmployee(managedEmployee);
-
-            transaction.commit();
-        }
-    }
-
     @Test
     void createPayment_persistsAndUpdatesInvoiceToPaid() {
-        Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Invoice invoice = persistInvoice(apartment, YearMonth.of(2025, 1), new BigDecimal("99.99"), PaymentStatus.NOT_PAID);
 
         Payment payment = persistPaymentForInvoice(invoice.getId());
@@ -219,8 +218,8 @@ class PaymentCrudDaoTest {
 
     @Test
     void createPayment_whenInvoiceAlreadyPaid_throwsDAOException() {
-        Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Invoice invoice = persistInvoice(apartment, YearMonth.of(2025, 2), new BigDecimal("10.00"), PaymentStatus.PAID);
 
         Payment payment = new Payment();
@@ -233,8 +232,8 @@ class PaymentCrudDaoTest {
 
     @Test
     void createPayment_whenInvoiceAlreadyHasPayment_throwsDAOException() {
-        Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Invoice invoice = persistInvoice(apartment, YearMonth.of(2025, 3), new BigDecimal("20.00"), PaymentStatus.NOT_PAID);
 
         persistPaymentForInvoice(invoice.getId());
@@ -254,8 +253,8 @@ class PaymentCrudDaoTest {
 
     @Test
     void getPaymentById_returnsPaymentWithInvoiceAndApartment() {
-        Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Invoice invoice = persistInvoice(apartment, YearMonth.of(2025, 4), new BigDecimal("11.11"), PaymentStatus.NOT_PAID);
 
         Payment payment = persistPaymentForInvoice(invoice.getId());
@@ -272,12 +271,12 @@ class PaymentCrudDaoTest {
 
     @Test
     void getPaymentByInvoiceId_returnsPayment() {
-        Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Invoice invoice = persistInvoice(apartment, YearMonth.of(2025, 5), new BigDecimal("33.33"), PaymentStatus.NOT_PAID);
 
-        Company company = persistCompany();
-        Employee employee = persistEmployee(company);
+        Company company = persistCompany("Company 1");
+        Employee employee = persistEmployee(company, "Georgi", "Georgiev");
         assignEmployeeToBuilding(building, employee);
 
         Payment payment = persistPaymentForInvoice(invoice.getId());
@@ -297,8 +296,8 @@ class PaymentCrudDaoTest {
 
     @Test
     void getPaymentsByApartmentId_returnsPayments() {
-        Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment = persistApartment(building, "Apartment 1");
 
         Invoice invoice1 = persistInvoice(apartment, YearMonth.of(2025, 6), new BigDecimal("10.00"), PaymentStatus.NOT_PAID);
         Invoice invoice2 = persistInvoice(apartment, YearMonth.of(2025, 7), new BigDecimal("20.00"), PaymentStatus.NOT_PAID);
@@ -312,19 +311,19 @@ class PaymentCrudDaoTest {
         assertEquals(2, paymentList.size());
         assertTrue(paymentList.get(0).getPaidAt().compareTo(paymentList.get(1).getPaidAt()) >= 0);
 
-        Set<Long> invoiceIds = paymentList.stream().map(payment -> payment.getInvoice().getId()).collect(Collectors.toSet());
+        Set<Long> invoiceIds = paymentList.stream().map(p -> p.getInvoice().getId()).collect(Collectors.toSet());
         assertTrue(invoiceIds.contains(invoice1.getId()));
         assertTrue(invoiceIds.contains(invoice2.getId()));
     }
 
     @Test
     void getPaymentsByBuildingId_returnsOnlyPaymentsForThatBuilding() {
-        Building building1 = persistBuilding();
-        Apartment apartment1 = persistApartment(building1, "1001");
-        Apartment apartment2 = persistApartment(building1, "1002");
+        Building building1 = persistBuilding("Building 1", "Address 1");
+        Apartment apartment1 = persistApartment(building1, "Apartment 1");
+        Apartment apartment2 = persistApartment(building1, "Apartment 2");
 
-        Building building2 = persistBuilding();
-        Apartment apartment3 = persistApartment(building2, "1003");
+        Building building2 = persistBuilding("Building 2", "Address 2");
+        Apartment apartment3 = persistApartment(building2, "Apartment 3");
 
         Invoice invoice1 = persistInvoice(apartment1, YearMonth.of(2025, 8), new BigDecimal("10.00"), PaymentStatus.NOT_PAID);
         Invoice invoice2 = persistInvoice(apartment2, YearMonth.of(2025, 8), new BigDecimal("15.00"), PaymentStatus.NOT_PAID);
@@ -340,19 +339,19 @@ class PaymentCrudDaoTest {
         assertEquals(2, paymentList.size());
 
         for (Payment payment : paymentList) {
-            Invoice invoice = invoiceCrudDao.getInvoiceById(payment.getInvoice().getId());
-            assertNotNull(invoice);
-            assertNotNull(invoice.getApartment());
-            assertNotNull(invoice.getApartment().getBuilding());
-            assertEquals(building1.getId(), invoice.getApartment().getBuilding().getId());
+            Invoice inv = invoiceCrudDao.getInvoiceById(payment.getInvoice().getId());
+            assertNotNull(inv);
+            assertNotNull(inv.getApartment());
+            assertNotNull(inv.getApartment().getBuilding());
+            assertEquals(building1.getId(), inv.getApartment().getBuilding().getId());
         }
     }
 
     @Test
     void getPaymentsByBuildingAndMonth_returnsOnlyThatMonth() {
-        Building building = persistBuilding();
-        Apartment apartment1 = persistApartment(building, "1001");
-        Apartment apartment2 = persistApartment(building, "1002");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment1 = persistApartment(building, "Apartment 1");
+        Apartment apartment2 = persistApartment(building, "Apartment 2");
 
         Invoice invoiceJan = persistInvoice(apartment1, YearMonth.of(2025, 1), new BigDecimal("10.00"), PaymentStatus.NOT_PAID);
         Invoice invoiceFeb1 = persistInvoice(apartment1, YearMonth.of(2025, 2), new BigDecimal("20.00"), PaymentStatus.NOT_PAID);
@@ -368,17 +367,17 @@ class PaymentCrudDaoTest {
         assertEquals(2, paymentList.size());
 
         for (Payment payment : paymentList) {
-            Invoice invoice = invoiceCrudDao.getInvoiceById(payment.getInvoice().getId());
-            assertNotNull(invoice);
-            assertEquals(YearMonth.of(2025, 2), invoice.getBillingMonth());
+            Invoice inv = invoiceCrudDao.getInvoiceById(payment.getInvoice().getId());
+            assertNotNull(inv);
+            assertEquals(YearMonth.of(2025, 2), inv.getBillingMonth());
         }
     }
 
     @Test
     void getAllPayments_returnsPayments() {
-        Building building = persistBuilding();
-        Apartment apartment1 = persistApartment(building, "1001");
-        Apartment apartment2 = persistApartment(building, "1002");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment1 = persistApartment(building, "Apartment 1");
+        Apartment apartment2 = persistApartment(building, "Apartment 2");
 
         Invoice invoice1 = persistInvoice(apartment1, YearMonth.of(2025, 9), new BigDecimal("10.00"), PaymentStatus.NOT_PAID);
         Invoice invoice2 = persistInvoice(apartment2, YearMonth.of(2025, 10), new BigDecimal("20.00"), PaymentStatus.NOT_PAID);
@@ -395,8 +394,8 @@ class PaymentCrudDaoTest {
 
     @Test
     void updatePayment_updatesOnlyNonNullFields() {
-        Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Invoice invoice = persistInvoice(apartment, YearMonth.of(2025, 11), new BigDecimal("55.55"), PaymentStatus.NOT_PAID);
 
         Payment payment = persistPaymentForInvoice(invoice.getId());
@@ -428,8 +427,8 @@ class PaymentCrudDaoTest {
 
     @Test
     void deletePayment_deletesAndSetsInvoiceToNotPaid() {
-        Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Building building = persistBuilding("Building 1", "Address 1");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Invoice invoice = persistInvoice(apartment, YearMonth.of(2025, 12), new BigDecimal("66.66"), PaymentStatus.NOT_PAID);
 
         Payment payment = persistPaymentForInvoice(invoice.getId());

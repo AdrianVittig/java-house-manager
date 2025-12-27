@@ -43,8 +43,8 @@ class ResidentCrudDaoTest {
 
     private Building persistBuilding() {
         Building building = new Building();
-        building.setName("Test Building");
-        building.setAddress("Test Address");
+        building.setName("Building 1");
+        building.setAddress("Address 1");
         building.setBuiltUpArea(new BigDecimal("120"));
         building.setCommonAreasPercentageOfBuiltUpArea(new BigDecimal("0.2"));
         building.setCountOfFloors(3);
@@ -104,9 +104,9 @@ class ResidentCrudDaoTest {
     @Test
     void createResident_persists() {
         Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Apartment apartment = persistApartment(building, "Apartment 1");
 
-        Resident resident = persistResident(apartment, "Ivan", "Ivanov", 25);
+        Resident resident = persistResident(apartment, "Maria", "Ivanov", 25);
 
         assertNotNull(resident.getId());
     }
@@ -118,8 +118,8 @@ class ResidentCrudDaoTest {
 
         Resident resident = new Resident();
         resident.setApartment(apartment);
-        resident.setFirstName("Ivan");
-        resident.setLastName("Ivanov");
+        resident.setFirstName("Georgi");
+        resident.setLastName("Georgiev");
         resident.setAge(25);
         resident.setUsesElevator(true);
 
@@ -129,7 +129,7 @@ class ResidentCrudDaoTest {
     @Test
     void getResidentById_returnsEntity() {
         Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Resident resident = persistResident(apartment, "Ivan", "Ivanov", 25);
 
         Resident found = residentCrudDao.getResidentById(resident.getId());
@@ -150,8 +150,8 @@ class ResidentCrudDaoTest {
     @Test
     void getResidentWithDetails_returnsEntityWithApartment() {
         Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
-        Resident resident = persistResident(apartment, "Ivan", "Ivanov", 25);
+        Apartment apartment = persistApartment(building, "Apartment 1");
+        Resident resident = persistResident(apartment, "Petar", "Petrov", 25);
 
         Resident found = residentCrudDao.getResidentWithDetails(resident.getId());
 
@@ -170,9 +170,9 @@ class ResidentCrudDaoTest {
     @Test
     void getAllResidents_returnsList() {
         Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
-        persistResident(apartment, "Ivan", "Ivanov", 25);
-        persistResident(apartment, "Maria", "Petrova", 30);
+        Apartment apartment = persistApartment(building, "Apartment 1");
+        persistResident(apartment, "Georgi", "Georgiev", 25);
+        persistResident(apartment, "Maria", "Ivanov", 30);
 
         List<Resident> residents = residentCrudDao.getAllResidents();
 
@@ -183,11 +183,11 @@ class ResidentCrudDaoTest {
     @Test
     void updateResident_updatesFields() {
         Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
+        Apartment apartment = persistApartment(building, "Apartment 1");
         Resident resident = persistResident(apartment, "Ivan", "Ivanov", 25);
 
         Resident patchResident = new Resident();
-        patchResident.setFirstName("Georgi");
+        patchResident.setFirstName("Yordan");
         patchResident.setLastName("Georgiev");
         patchResident.setAge(31);
         patchResident.setRole(resident.getRole());
@@ -197,7 +197,7 @@ class ResidentCrudDaoTest {
 
         Resident updated = residentCrudDao.getResidentById(resident.getId());
         assertNotNull(updated);
-        assertEquals("Georgi", updated.getFirstName());
+        assertEquals("Yordan", updated.getFirstName());
         assertEquals("Georgiev", updated.getLastName());
         assertEquals(31, updated.getAge());
         assertFalse(updated.isUsesElevator());
@@ -217,8 +217,8 @@ class ResidentCrudDaoTest {
     @Test
     void deleteResident_deletesEntity() {
         Building building = persistBuilding();
-        Apartment apartment = persistApartment(building, "1001");
-        Resident resident = persistResident(apartment, "Ivan", "Ivanov", 25);
+        Apartment apartment = persistApartment(building, "Apartment 1");
+        Resident resident = persistResident(apartment, "Maria", "Ivanov", 25);
 
         residentCrudDao.deleteResident(resident.getId());
 

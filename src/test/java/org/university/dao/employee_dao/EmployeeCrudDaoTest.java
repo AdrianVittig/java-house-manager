@@ -32,8 +32,8 @@ class EmployeeCrudDaoTest {
     }
 
     @AfterEach
-    void cleanup(){
-        try(Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+    void cleanup() {
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
             session.createQuery("DELETE FROM Contract").executeUpdate();
@@ -73,10 +73,10 @@ class EmployeeCrudDaoTest {
         return e;
     }
 
-    private Building persistBuilding(String name) {
+    private Building persistBuilding(String name, String address) {
         Building b = new Building();
         b.setName(name);
-        b.setAddress("Test Address");
+        b.setAddress(address);
         b.setBuiltUpArea(new BigDecimal("120"));
         b.setCommonAreasPercentageOfBuiltUpArea(new BigDecimal("0.2"));
         b.setCountOfFloors(3);
@@ -92,9 +92,9 @@ class EmployeeCrudDaoTest {
         return b;
     }
 
-    private Contract persistContract(Employee e, Building b) {
+    private Contract persistContract(Employee e, Building b, String number) {
         Contract c = new Contract();
-        c.setNumber("Contract: " + System.nanoTime());
+        c.setNumber(number);
         c.setIssueDate(LocalDate.now().minusDays(1));
         c.setEndDate(LocalDate.now().plusDays(30));
         c.setEmployee(e);
@@ -115,14 +115,14 @@ class EmployeeCrudDaoTest {
     @Test
     void getEmployeeById_returnsEntity() {
         Company company = persistCompany("Company 1");
-        Employee e = persistEmployee("Ivan", "Ivanov", 25, company);
+        Employee e = persistEmployee("Georgi", "Georgiev", 25, company);
 
         Employee found = employeeCrudDao.getEmployeeById(e.getId());
 
         assertNotNull(found);
         assertEquals(e.getId(), found.getId());
-        assertEquals("Ivan", found.getFirstName());
-        assertEquals("Ivanov", found.getLastName());
+        assertEquals("Georgi", found.getFirstName());
+        assertEquals("Georgiev", found.getLastName());
     }
 
     @Test
@@ -135,7 +135,7 @@ class EmployeeCrudDaoTest {
     void getAllEmployees_returnsList() {
         Company company = persistCompany("Company 1");
         persistEmployee("Ivan", "Ivanov", 25, company);
-        persistEmployee("Georgi", "Petrov", 26, company);
+        persistEmployee("Maria", "Petrov", 26, company);
 
         List<Employee> employees = employeeCrudDao.getAllEmployees();
 
@@ -145,13 +145,13 @@ class EmployeeCrudDaoTest {
 
     @Test
     void getEmployeeIdWithLeastContracts_returnsEmployeeWithZeroContracts() {
-        Company company = persistCompany("Company 11");
+        Company company = persistCompany("Company 1");
 
-        Employee e1 = persistEmployee("Ivan", "Ivanov", 20, company);
-        Employee e2 = persistEmployee("Georgi", "Georgiev", 20, company);
+        Employee e1 = persistEmployee("Petar", "Petrov", 20, company);
+        Employee e2 = persistEmployee("Yordan", "Georgiev", 20, company);
 
-        Building b = persistBuilding("Test Building");
-        persistContract(e2, b);
+        Building b = persistBuilding("Building 1", "Address 1");
+        persistContract(e2, b, "Contract: 1001");
 
         Long leastId = employeeCrudDao.getEmployeeIdWithLeastContracts();
 
@@ -167,10 +167,10 @@ class EmployeeCrudDaoTest {
     @Test
     void getEmployeeWithRelations_returnsEmployeeAndContractList() {
         Company company = persistCompany("Company 1");
-        Employee e = persistEmployee("Ivan", "Ivanov", 25, company);
+        Employee e = persistEmployee("Georgi", "Georgiev", 25, company);
 
-        Building b = persistBuilding("Building 1");
-        persistContract(e, b);
+        Building b = persistBuilding("Building 1", "Address 1");
+        persistContract(e, b, "Contract: 1001");
 
         Employee found = employeeCrudDao.getEmployeeWithRelations(e.getId());
 
@@ -191,15 +191,15 @@ class EmployeeCrudDaoTest {
 
         Employee e1 = persistEmployee("Ivan", "Ivanov", 20, company);
         Employee e2 = persistEmployee("Georgi", "Georgiev", 28, company);
-        Employee e3 = persistEmployee("Nikola", "Petrov", 35, company);
+        Employee e3 = persistEmployee("Petar", "Petrov", 35, company);
 
-        Building b = persistBuilding("Test Building");
-        Building b2 = persistBuilding("Test Building 2");
-        Building b3 = persistBuilding("Test Building 3");
+        Building b = persistBuilding("Building 1", "Address 1");
+        Building b2 = persistBuilding("Building 2", "Address 2");
+        Building b3 = persistBuilding("Building 3", "Address 3");
 
-        persistContract(e2, b);
-        persistContract(e3, b2);
-        persistContract(e3, b3);
+        persistContract(e2, b, "Contract: 1001");
+        persistContract(e3, b2, "Contract: 1002");
+        persistContract(e3, b3, "Contract: 1003");
 
         Long id = employeeCrudDao.getEmployeeIdWithLeastContractsExcluding(e1.getId(), company.getId());
 
@@ -209,8 +209,8 @@ class EmployeeCrudDaoTest {
 
     @Test
     void getEmployeeIdWithLeastContractsExcluding_whenNoOtherEmployees_returnsNull() {
-        Company c = persistCompany("Test Company");
-        Employee only = persistEmployee("Georgi", "Georgiev", 22, c);
+        Company c = persistCompany("Company 1");
+        Employee only = persistEmployee("Yordan", "Georgiev", 22, c);
 
         Long id = employeeCrudDao.getEmployeeIdWithLeastContractsExcluding(only.getId(), c.getId());
 
@@ -219,14 +219,14 @@ class EmployeeCrudDaoTest {
 
     @Test
     void getEmployeeIdWithLeastContractsExcluding_whenCompanyHasNoEmployees_returnsNull() {
-        Company c = persistCompany("Test Company");
+        Company c = persistCompany("Company 1");
         Long id = employeeCrudDao.getEmployeeIdWithLeastContractsExcluding(123L, c.getId());
         assertNull(id);
     }
 
     @Test
     void updateEmployee_updatesFields() {
-        Company company = persistCompany("Test Company");
+        Company company = persistCompany("Company 1");
         Employee e = persistEmployee("Ivan", "Ivanov", 25, company);
 
         Employee toUpdate = new Employee();
@@ -247,7 +247,7 @@ class EmployeeCrudDaoTest {
     }
 
     @Test
-    void updateEmployee_whenMissing_throwsDAOException(){
+    void updateEmployee_whenMissing_throwsDAOException() {
         Employee patch = new Employee();
         patch.setFirstName("Georgi");
         patch.setLastName("Georgiev");
@@ -259,7 +259,7 @@ class EmployeeCrudDaoTest {
 
     @Test
     void deleteEmployee_deletesEntity() {
-        Company company = persistCompany("Test Company");
+        Company company = persistCompany("Company 1");
         Employee e = persistEmployee("Ivan", "Ivanov", 25, company);
 
         employeeCrudDao.deleteEmployee(e.getId());
@@ -269,7 +269,7 @@ class EmployeeCrudDaoTest {
     }
 
     @Test
-    void deleteEmployee_whenMissing_throwsDAOException(){
+    void deleteEmployee_whenMissing_throwsDAOException() {
         assertThrows(DAOException.class, () -> employeeCrudDao.deleteEmployee(999999L));
     }
 }
