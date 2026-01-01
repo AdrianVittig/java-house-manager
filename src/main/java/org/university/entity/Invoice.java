@@ -40,8 +40,25 @@ public class Invoice extends BaseEntity{
     private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "apartment_id", nullable = false)
     private Apartment apartment;
 
-    @OneToOne(mappedBy = "invoice")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
+
+    @Override
+    public String toString() {
+        Long apartmentId = (apartment != null ? apartment.getId() : null);
+        Long paymentId = (payment != null ? payment.getId() : null);
+
+        return "Invoice{" +
+                "id=" + getId() +
+                ", billingMonth=" + billingMonth +
+                ", dueDate=" + dueDate +
+                ", totalAmount=" + totalAmount +
+                ", paymentStatus=" + paymentStatus +
+                ", apartmentId=" + apartmentId +
+                ", paymentId=" + paymentId +
+                '}';
+    }
 }

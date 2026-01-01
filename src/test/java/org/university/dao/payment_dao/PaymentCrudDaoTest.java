@@ -9,6 +9,7 @@ import org.university.configuration.SessionFactoryUtil;
 import org.university.dao.invoice_dao.InvoiceCrudDao;
 import org.university.entity.*;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 import org.university.util.PaymentStatus;
 
 import java.math.BigDecimal;
@@ -422,7 +423,7 @@ class PaymentCrudDaoTest {
     void updatePayment_whenMissing_throwsDAOException() {
         Payment patchPayment = new Payment();
         patchPayment.setAmount(new BigDecimal("10.00"));
-        assertThrows(DAOException.class, () -> paymentCrudDao.updatePayment(999999L, patchPayment));
+        assertThrows(NotFoundException.class, () -> paymentCrudDao.updatePayment(999999L, patchPayment));
     }
 
     @Test
@@ -444,6 +445,6 @@ class PaymentCrudDaoTest {
 
     @Test
     void deletePayment_whenMissing_throwsDAOException() {
-        assertThrows(DAOException.class, () -> paymentCrudDao.deletePayment(999999L));
+        assertThrows(NotFoundException.class, () -> paymentCrudDao.deletePayment(999999L));
     }
 }

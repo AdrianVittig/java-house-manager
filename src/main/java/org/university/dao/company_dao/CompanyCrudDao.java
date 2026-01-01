@@ -77,7 +77,9 @@ public class CompanyCrudDao {
             updatedCompany.setName(company.getName());
             updatedCompany.setRevenue(company.getRevenue());
             transaction.commit();
-        }catch(Exception e){
+        }catch (NotFoundException e) {
+            throw e;
+        } catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while updating company with id: " + id, e);
         } finally{
@@ -97,6 +99,8 @@ public class CompanyCrudDao {
             }
             session.remove(company);
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while deleting company with id: " + id, e);

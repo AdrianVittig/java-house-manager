@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class NameRegexValidator implements ConstraintValidator<NameRegex, String> {
 
     private static final Pattern pattern =
-            Pattern.compile("^[A-Z][a-zA-Z0-9]+$");
+            Pattern.compile("^[\\p{Lu}][\\p{L}0-9]*(?:[ .\\-][\\p{L}0-9]+)*$");
 
     @Override
     public boolean isValid(String strValue, ConstraintValidatorContext constraintValidatorContext) {

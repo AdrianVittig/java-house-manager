@@ -42,15 +42,43 @@ public class Building extends BaseEntity{
     @NotNull(message = "Built date cannot be null")
     private LocalDate builtDate;
 
-    // Employee
     @ManyToOne(fetch = FetchType.LAZY)
     private Employee employee;
 
-    // Apartments
-    @OneToMany(mappedBy = "building")
+    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Apartment> apartmentList = new ArrayList<>();
 
-    // Contract
-    @OneToOne
+    @OneToOne(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Contract contract;
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
+
+        if (contract != null && contract.getBuilding() != this) {
+            contract.setBuilding(this);
+        }
+    }
+
+    public Contract getContract() {
+        return contract;
+    }
+
+    @Override
+    public String toString() {
+        Long employeeId = (employee != null ? employee.getId() : null);
+        Long contractId = (contract != null ? contract.getId() : null);
+
+        return "Building{" +
+                "id=" + getId() +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", builtUpArea=" + builtUpArea +
+                ", commonAreasPercentageOfBuiltUpArea=" + commonAreasPercentageOfBuiltUpArea +
+                ", countOfFloors=" + countOfFloors +
+                ", apartmentsPerFloor=" + apartmentsPerFloor +
+                ", builtDate=" + builtDate +
+                ", employeeId=" + employeeId +
+                ", contractId=" + contractId +
+                '}';
+    }
 }

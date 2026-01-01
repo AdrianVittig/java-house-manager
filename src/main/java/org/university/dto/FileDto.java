@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.university.util.PaymentStatus;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -34,4 +35,20 @@ public class FileDto implements Serializable {
 
     private BigDecimal amount;
     private LocalDateTime paidAt;
+
+    private PaymentStatus paymentStatus;
+
+    @Override
+    public String toString() {
+        return "FileDto{" +
+                "invoiceId=" + invoiceId +
+                ", buildingId=" + buildingId +
+                ", billingMonth=" + billingMonth +
+                ", amount=" + amount +
+                ", paymentStatus=" + paymentStatus +
+                ", paidAt=" + paidAt +
+                ", companyName='" + companyName + '\'' +
+                ", employeeName='" + employeeFirstName + " " + employeeLastName + '\'' +
+                '}';
+    }
 }

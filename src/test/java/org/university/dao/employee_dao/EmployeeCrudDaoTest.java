@@ -12,6 +12,7 @@ import org.university.entity.Company;
 import org.university.entity.Contract;
 import org.university.entity.Employee;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -254,7 +255,7 @@ class EmployeeCrudDaoTest {
         patch.setAge(40);
         patch.setFeeCollectingDate(LocalDate.now());
 
-        assertThrows(DAOException.class, () -> employeeCrudDao.updateEmployee(999999L, patch));
+        assertThrows(NotFoundException.class, () -> employeeCrudDao.updateEmployee(999999L, patch));
     }
 
     @Test
@@ -270,6 +271,6 @@ class EmployeeCrudDaoTest {
 
     @Test
     void deleteEmployee_whenMissing_throwsDAOException() {
-        assertThrows(DAOException.class, () -> employeeCrudDao.deleteEmployee(999999L));
+        assertThrows(NotFoundException.class, () -> employeeCrudDao.deleteEmployee(999999L));
     }
 }

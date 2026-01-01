@@ -52,7 +52,8 @@ public class FeeCollectionServiceImpl implements FeeCollectionService {
                 p.getInvoice().getApartment().getBuilding().getAddress(),
                 p.getInvoice().getApartment().getNumber(),
                 p.getAmount(),
-                p.getPaidAt()
+                p.getPaidAt(),
+                p.getPaymentStatus()
         );
 
         fileService.saveToFile(dto);

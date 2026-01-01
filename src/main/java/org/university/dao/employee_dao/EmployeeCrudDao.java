@@ -31,6 +31,8 @@ public class EmployeeCrudDao {
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             return session.find(Employee.class, id);
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while getting employee with id: " + id, e);
         } finally{
@@ -62,6 +64,8 @@ public class EmployeeCrudDao {
                             Long.class)
                     .setMaxResults(1)
                     .getSingleResult();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while getting employee id with fewest contracts: ", e);
         }
@@ -82,6 +86,8 @@ public class EmployeeCrudDao {
                     Employee.class)
                     .setParameter("id", employeeId)
                     .getSingleResult();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while getting employee with relations: ", e);
         }finally{
@@ -110,6 +116,8 @@ public class EmployeeCrudDao {
 
             return ids.isEmpty() ? null : ids.get(0);
 
+        }catch (NotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new DAOException("Error while getting employee id with fewest contracts (excluding): ", e);
         } finally {
@@ -133,6 +141,8 @@ public class EmployeeCrudDao {
             updatedEmployee.setAge(employee.getAge());
             updatedEmployee.setFeeCollectingDate(employee.getFeeCollectingDate());
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while updating employee with id: " + id, e);
@@ -153,6 +163,8 @@ public class EmployeeCrudDao {
             }
             session.remove(employee);
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while deleting employee with id: " + id, e);

@@ -10,6 +10,7 @@ import org.university.entity.Apartment;
 import org.university.entity.Building;
 import org.university.entity.Invoice;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 import org.university.util.PaymentStatus;
 
 import java.math.BigDecimal;
@@ -249,7 +250,7 @@ class InvoiceCrudDaoTest {
     void updateInvoice_whenMissing_throwsDAOException() {
         Invoice toUpdate = new Invoice();
         toUpdate.setTotalAmount(new BigDecimal("100.00"));
-        assertThrows(DAOException.class, () -> invoiceCrudDao.updateInvoice(999999L, toUpdate));
+        assertThrows(NotFoundException.class, () -> invoiceCrudDao.updateInvoice(999999L, toUpdate));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package org.university.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -29,7 +30,15 @@ public class Company extends BaseEntity{
 
     private BigDecimal revenue;
 
-    // Employees
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Employee> employeeList = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + getId() +
+                ", name='" + name + '\'' +
+                ", revenue=" + revenue +
+                '}';
+    }
 }

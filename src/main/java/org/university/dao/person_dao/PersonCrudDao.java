@@ -32,6 +32,8 @@ public class PersonCrudDao {
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             return session.find(Person.class, id);
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while getting person with id: " + id, e);
         } finally{
@@ -66,6 +68,8 @@ public class PersonCrudDao {
             updatedPerson.setLastName(person.getLastName());
             updatedPerson.setAge(person.getAge());
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while updating person with id: " + id, e);
@@ -86,6 +90,8 @@ public class PersonCrudDao {
             }
             session.remove(person);
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while deleting person with id: " + id, e);

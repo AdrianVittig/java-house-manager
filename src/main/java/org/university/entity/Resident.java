@@ -16,10 +16,24 @@ public class Resident extends Person{
     @Enumerated(EnumType.STRING)
     private ResidentRole role;
 
-    // Apartment
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "apartment_id", nullable = false)
     private Apartment apartment;
 
-    // Uses elevator
     private boolean usesElevator;
+
+    @Override
+    public String toString() {
+        Long apartmentId = (apartment != null ? apartment.getId() : null);
+
+        return "Resident{" +
+                "id=" + getId() +
+                ", firstName='" + getFirstName() + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", age=" + getAge() +
+                ", role=" + role +
+                ", usesElevator=" + usesElevator +
+                ", apartmentId=" + apartmentId +
+                '}';
+    }
 }

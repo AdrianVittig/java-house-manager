@@ -27,17 +27,28 @@ public class Apartment extends BaseEntity{
     @PositiveOrZero(message = "Apartment area cannot be negative")
     private BigDecimal area;
 
-    @NotNull(message = "Has pet cannot be null")
     private boolean hasPet;
 
-    // List of residents
-    @OneToMany(mappedBy = "apartment")
+    @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resident> residentList = new ArrayList<>();
 
-    // Building
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "building_id")
     private Building building;
 
-    @OneToMany(mappedBy = "apartment")
+    @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Invoice> invoiceList = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        Long buildingId = (building != null ? building.getId() : null);
+
+        return "Apartment{" +
+                "id=" + getId() +
+                ", number='" + number + '\'' +
+                ", area=" + area +
+                ", hasPet=" + hasPet +
+                ", buildingId=" + buildingId +
+                '}';
+    }
 }

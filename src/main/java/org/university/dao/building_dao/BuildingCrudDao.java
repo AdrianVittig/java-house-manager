@@ -33,6 +33,8 @@ public class BuildingCrudDao {
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             return session.find(Building.class, id);
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while getting building with id: " + id, e);
         } finally{
@@ -71,6 +73,8 @@ public class BuildingCrudDao {
             updatedBuilding.setCommonAreasPercentageOfBuiltUpArea(building.getCommonAreasPercentageOfBuiltUpArea());
             updatedBuilding.setBuiltDate(building.getBuiltDate());
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while updating building with id: " + id, e);
@@ -91,6 +95,8 @@ public class BuildingCrudDao {
                     )
                     .setParameter("id", id)
                     .getResultList().stream().findFirst().orElse(null);
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while getting building with apartments and employee, id: " + id, e);
         }
@@ -127,7 +133,9 @@ public class BuildingCrudDao {
 
             return building;
 
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
+            throw e;
+        }catch (Exception e) {
             throw new DAOException("Error while getting building with apartments and residents, id: " + id, e);
         } finally {
             if (session != null && session.isOpen()) session.close();
@@ -145,6 +153,8 @@ public class BuildingCrudDao {
                                     "WHERE b.id = :id", Building.class
                     ).setParameter("id", id)
                     .getResultList().stream().findFirst().orElse(null);
+        }catch (NotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new DAOException("Error while getting building details id=" + id, e);
         }
@@ -165,7 +175,9 @@ public class BuildingCrudDao {
             managed.setEmployee(employee);
 
             tx.commit();
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
+            throw e;
+        }catch (Exception e) {
             if (tx != null) tx.rollback();
             throw new DAOException("Error while updating building employee for building id: " + buildingId, e);
         } finally {
@@ -185,6 +197,8 @@ public class BuildingCrudDao {
             }
             session.remove(building);
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while deleting building with id: " + id, e);

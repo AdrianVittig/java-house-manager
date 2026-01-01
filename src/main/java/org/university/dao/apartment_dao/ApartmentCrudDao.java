@@ -25,7 +25,7 @@ public class ApartmentCrudDao {
             apartment.setBuilding(managed);
             session.persist(apartment);
             transaction.commit();
-        }catch(Exception e){
+        } catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while creating apartment: ", e);
         }finally{
@@ -43,7 +43,8 @@ public class ApartmentCrudDao {
                             "WHERE a.id = :id", Apartment.class)
                     .setParameter("id", id)
                     .getResultList().stream().findFirst().orElse(null);
-        }catch(Exception e){
+        }
+        catch(Exception e){
             throw new DAOException("Error while getting apartment with id: " + id, e);
         } finally{
             if(session != null && session.isOpen()) session.close();

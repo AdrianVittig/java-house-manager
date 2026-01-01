@@ -38,6 +38,8 @@ public class ResidentCrudDao {
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             return session.find(Resident.class, id);
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while getting resident with id: " + id, e);
         } finally{
@@ -57,6 +59,8 @@ public class ResidentCrudDao {
                     .stream()
                     .findFirst()
                     .orElse(null);
+        }catch (NotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new DAOException("Error while getting resident with details, id: " + id, e);
         }
@@ -91,6 +95,8 @@ public class ResidentCrudDao {
             updatedResident.setRole(resident.getRole());
             updatedResident.setUsesElevator(resident.isUsesElevator());
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while updating resident with id: " + id, e);
@@ -111,6 +117,8 @@ public class ResidentCrudDao {
             }
             session.remove(resident);
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while deleting resident with id: " + id, e);

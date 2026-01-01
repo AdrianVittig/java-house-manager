@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.university.configuration.SessionFactoryUtil;
 import org.university.entity.Apartment;
 import org.university.entity.Building;
+import org.university.entity.Company;
 import org.university.entity.Employee;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -56,20 +58,35 @@ class BuildingCrudDaoTest {
         return b;
     }
 
-    private Employee persistEmployee(String firstName, String lastName) {
-        Employee e = new Employee();
-        e.setFirstName(firstName);
-        e.setLastName(lastName);
-        e.setAge(30);
-        e.setFeeCollectingDate(LocalDate.now());
+    private Company persistCompany(Session session) {
+        Company c = new Company();
+        c.setName("Company1");
+        c.setRevenue(BigDecimal.TEN);
+        session.persist(c);
+        return c;
+    }
 
+    private Employee persistEmployee(String firstName, String lastName) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+            Transaction tx = session.beginTransaction();
+
+            Company c = persistCompany(session);
+
+            Employee e = new Employee();
+            e.setFirstName(firstName);
+            e.setLastName(lastName);
+            e.setAge(30);
+            e.setFeeCollectingDate(LocalDate.now());
+            e.setCompany(c);
+
             session.persist(e);
-            transaction.commit();
+
+            tx.commit();
+
+            assertNotNull(c.getId());
+            assertNotNull(e.getId());
+            return e;
         }
-        assertNotNull(e.getId());
-        return e;
     }
 
     private Apartment persistApartmentForBuilding(Building b, String number) {
@@ -165,7 +182,7 @@ class BuildingCrudDaoTest {
         b.setApartmentsPerFloor(4);
         b.setBuiltDate(LocalDate.now());
 
-        assertThrows(DAOException.class, () -> buildingCrudDao.updateBuilding(899898L, b));
+        assertThrows(NotFoundException.class, () -> buildingCrudDao.updateBuilding(899898L, b));
     }
 
     @Test
@@ -232,7 +249,7 @@ class BuildingCrudDaoTest {
     @Test
     void updateBuildingEmployee_whenMissingBuilding_throwsDAOException() {
         Employee e = persistEmployee("Petar", "Petrov");
-        assertThrows(DAOException.class, () -> buildingCrudDao.updateBuildingEmployee(89999898L, e));
+        assertThrows(NotFoundException.class, () -> buildingCrudDao.updateBuildingEmployee(89999898L, e));
     }
 
     @Test
@@ -247,6 +264,6 @@ class BuildingCrudDaoTest {
 
     @Test
     void deleteBuilding_whenMissing_throwsDAOException() {
-        assertThrows(DAOException.class, () -> buildingCrudDao.deleteBuilding(89999898L));
+        assertThrows(NotFoundException.class, () -> buildingCrudDao.deleteBuilding(89999898L));
     }
 }

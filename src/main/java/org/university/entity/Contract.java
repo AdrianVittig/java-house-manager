@@ -26,11 +26,38 @@ public class Contract extends BaseEntity{
 
     private LocalDate endDate;
 
-    // Building
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "building_id", nullable = false, unique = true)
     private Building building;
 
-    // Employee
+    public Building getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
+
+        if (building != null && building.getContract() != this) {
+            building.setContract(this);
+        }
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
+
+    @Override
+    public String toString() {
+        Long buildingId = (building != null ? building.getId() : null);
+        Long employeeId = (employee != null ? employee.getId() : null);
+
+        return "Contract{" +
+                "id=" + getId() +
+                ", number='" + number + '\'' +
+                ", issueDate=" + issueDate +
+                ", endDate=" + endDate +
+                ", buildingId=" + buildingId +
+                ", employeeId=" + employeeId +
+                '}';
+    }
 }

@@ -30,7 +30,9 @@ public class ContractCrudDao {
             contract.setBuilding(managedBuilding);
             session.persist(contract);
             transaction.commit();
-        }catch(Exception e){
+        }catch (NotFoundException e) {
+            throw e;
+        } catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while creating contract: ", e);
         }finally{
@@ -43,6 +45,8 @@ public class ContractCrudDao {
         try{
             session = SessionFactoryUtil.getSessionFactory().openSession();
             return session.find(Contract.class, id);
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while getting contract with id: " + id, e);
         } finally{
@@ -73,6 +77,8 @@ public class ContractCrudDao {
                                     "WHERE c.id = :id", Contract.class
                     ).setParameter("id", id)
                     .getResultList().stream().findFirst().orElse(null);
+        }catch (NotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new DAOException("Error while getting contract details id=" + id, e);
         }finally {
@@ -89,6 +95,8 @@ public class ContractCrudDao {
                     .getSingleResult();
 
             return count > 0;
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             throw new DAOException("Error while checking if contract exists by building id: " + buildingId, e);
         }finally {
@@ -115,24 +123,51 @@ public class ContractCrudDao {
         Session session = null;
         Transaction transaction = null;
 
-        try{
+        try {
             session = SessionFactoryUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
+
             Contract updatedContract = session.find(Contract.class, id);
-            if(updatedContract == null){
+            if (updatedContract == null) {
                 throw new NotFoundException("Contract with id " + id + " does not exist");
             }
+
             updatedContract.setNumber(contract.getNumber());
             updatedContract.setIssueDate(contract.getIssueDate());
             updatedContract.setEndDate(contract.getEndDate());
-            updatedContract.setEmployee(contract.getEmployee());
-            updatedContract.setBuilding(contract.getBuilding());
+
+            if (contract.getEmployee() == null || contract.getEmployee().getId() == null) {
+                throw new IllegalArgumentException("Contract employee cannot be null");
+            }
+            if (contract.getBuilding() == null || contract.getBuilding().getId() == null) {
+                throw new IllegalArgumentException("Contract building cannot be null");
+            }
+
+            Employee managedEmployee = session.find(Employee.class, contract.getEmployee().getId());
+            if (managedEmployee == null) {
+                throw new NotFoundException("Employee with id " + contract.getEmployee().getId() + " does not exist");
+            }
+
+            Building managedBuilding = session.find(Building.class, contract.getBuilding().getId());
+            if (managedBuilding == null) {
+                throw new NotFoundException("Building with id " + contract.getBuilding().getId() + " does not exist");
+            }
+
+            updatedContract.setEmployee(managedEmployee);
+            updatedContract.setBuilding(managedBuilding);
+
             transaction.commit();
-        }catch(Exception e){
-            if(transaction != null) transaction.rollback();
+        } catch (NotFoundException e) {
+            if (transaction != null) transaction.rollback();
+            throw e;
+        } catch (IllegalArgumentException e) {
+            if (transaction != null) transaction.rollback();
+            throw e;
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
             throw new DAOException("Error while updating contract with id: " + id, e);
-        } finally{
-            if(session != null && session.isOpen()) session.close();
+        } finally {
+            if (session != null && session.isOpen()) session.close();
         }
     }
 
@@ -148,6 +183,8 @@ public class ContractCrudDao {
             }
             session.remove(contract);
             transaction.commit();
+        }catch (NotFoundException e) {
+            throw e;
         }catch(Exception e){
             if(transaction != null) transaction.rollback();
             throw new DAOException("Error while deleting contract with id: " + id, e);

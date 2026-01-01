@@ -18,19 +18,30 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Employee extends Person{
-    // Buildings
     @OneToMany(mappedBy = "employee")
     private List<Building> buildingList = new ArrayList<>();
 
-    // Company
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    // FeeCollectingDate
     @NotNull(message = "Fee collecting date cannot be null")
     private LocalDate feeCollectingDate;
 
-    // Contract
     @OneToMany(mappedBy = "employee")
     private List<Contract> contractList = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        Long companyId = (company != null ? company.getId() : null);
+
+        return "Employee{" +
+                "id=" + getId() +
+                ", firstName='" + getFirstName() + '\'' +
+                ", lastName='" + getLastName() + '\'' +
+                ", age=" + getAge() +
+                ", feeCollectingDate=" + feeCollectingDate +
+                ", companyId=" + companyId +
+                '}';
+    }
 }

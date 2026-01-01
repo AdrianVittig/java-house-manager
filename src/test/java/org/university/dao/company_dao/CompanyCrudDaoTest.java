@@ -9,6 +9,7 @@ import org.university.configuration.SessionFactoryUtil;
 import org.university.entity.Company;
 import org.university.entity.Employee;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -144,7 +145,7 @@ class CompanyCrudDaoTest {
         c.setName("Company 1");
         c.setRevenue(new BigDecimal("1000"));
 
-        assertThrows(DAOException.class, () -> companyCrudDao.updateCompany(89999898L, c));
+        assertThrows(NotFoundException.class, () -> companyCrudDao.updateCompany(89999898L, c));
     }
 
     @Test
@@ -158,6 +159,6 @@ class CompanyCrudDaoTest {
 
     @Test
     void deleteCompany_whenMissing_throwsDAOException() {
-        assertThrows(DAOException.class, () -> companyCrudDao.deleteCompany(89999898L));
+        assertThrows(NotFoundException.class, () -> companyCrudDao.deleteCompany(89999898L));
     }
 }

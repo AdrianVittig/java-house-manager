@@ -5,12 +5,14 @@ import org.hibernate.Transaction;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.matchers.Not;
 import org.university.configuration.SessionFactoryUtil;
 import org.university.entity.Building;
 import org.university.entity.Company;
 import org.university.entity.Contract;
 import org.university.entity.Employee;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -136,7 +138,7 @@ class ContractCrudDaoTest {
         c.setEmployee(fakeEmployee);
         c.setBuilding(b);
 
-        assertThrows(DAOException.class, () -> contractCrudDao.createContract(c));
+        assertThrows(NotFoundException.class, () -> contractCrudDao.createContract(c));
     }
 
     @Test
@@ -153,7 +155,7 @@ class ContractCrudDaoTest {
         c.setEmployee(e);
         c.setBuilding(fakeBuilding);
 
-        assertThrows(DAOException.class, () -> contractCrudDao.createContract(c));
+        assertThrows(NotFoundException.class, () -> contractCrudDao.createContract(c));
     }
 
     @Test
@@ -268,7 +270,7 @@ class ContractCrudDaoTest {
         toUpdate.setIssueDate(LocalDate.now().minusDays(15));
         toUpdate.setEndDate(LocalDate.now().plusYears(2));
 
-        assertThrows(DAOException.class, () -> contractCrudDao.updateContract(89888888L, toUpdate));
+        assertThrows(NotFoundException.class, () -> contractCrudDao.updateContract(89888888L, toUpdate));
     }
 
     @Test
@@ -285,6 +287,6 @@ class ContractCrudDaoTest {
 
     @Test
     void deleteContract_whenMissing_throwsDAOException() {
-        assertThrows(DAOException.class, () -> contractCrudDao.deleteContract(89888888L));
+        assertThrows(NotFoundException.class, () -> contractCrudDao.deleteContract(89888888L));
     }
 }

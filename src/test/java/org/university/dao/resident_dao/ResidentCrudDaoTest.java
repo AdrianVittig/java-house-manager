@@ -10,6 +10,7 @@ import org.university.entity.Apartment;
 import org.university.entity.Building;
 import org.university.entity.Resident;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 import org.university.util.ResidentRole;
 
 import java.math.BigDecimal;
@@ -211,7 +212,7 @@ class ResidentCrudDaoTest {
         patchResident.setAge(31);
         patchResident.setUsesElevator(false);
 
-        assertThrows(DAOException.class, () -> residentCrudDao.updateResident(999999L, patchResident));
+        assertThrows(NotFoundException.class, () -> residentCrudDao.updateResident(999999L, patchResident));
     }
 
     @Test
@@ -228,6 +229,6 @@ class ResidentCrudDaoTest {
 
     @Test
     void deleteResident_whenMissing_throwsDAOException() {
-        assertThrows(DAOException.class, () -> residentCrudDao.deleteResident(999999L));
+        assertThrows(NotFoundException.class, () -> residentCrudDao.deleteResident(999999L));
     }
 }

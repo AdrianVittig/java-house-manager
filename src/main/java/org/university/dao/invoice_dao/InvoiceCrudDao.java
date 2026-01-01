@@ -73,7 +73,9 @@ public class InvoiceCrudDao {
                     .stream()
                     .findFirst()
                     .orElse(null);
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
+            throw e;
+        }catch (Exception e) {
             throw new DAOException("Error while getting invoice with id: " + id, e);
         } finally {
             if (session != null && session.isOpen()) session.close();
@@ -93,6 +95,8 @@ public class InvoiceCrudDao {
                     )
                     .setParameter("apartmentId", apartmentId)
                     .getResultList();
+        }catch (NotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new DAOException("Error while getting invoices for apartment id: " + apartmentId, e);
         } finally {
@@ -113,6 +117,8 @@ public class InvoiceCrudDao {
                     )
                     .setParameter("buildingId", buildingId)
                     .getResultList();
+        }catch (NotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new DAOException("Error while getting invoices for building id: " + buildingId, e);
         } finally {
@@ -154,7 +160,9 @@ public class InvoiceCrudDao {
                     .stream()
                     .findFirst()
                     .orElse(null);
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
+            throw e;
+        }catch (Exception e) {
             throw new DAOException(
                     "Error while getting invoice for apartmentId " + apartmentId + " and month " + billingMonth,
                     e
@@ -175,7 +183,9 @@ public class InvoiceCrudDao {
                                     "WHERE i.id = :id", Invoice.class
                     ).setParameter("id", id)
                     .getResultList().stream().findFirst().orElse(null);
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
+            throw e;
+        }catch (Exception e) {
             throw new DAOException("Error while getting invoice details id=" + id, e);
         }finally {
             if(session != null && session.isOpen()) session.close();
@@ -232,7 +242,9 @@ public class InvoiceCrudDao {
             }
 
             transaction.commit();
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
+            throw e;
+        }catch (Exception e) {
             if (transaction != null) transaction.rollback();
             throw new DAOException("Error while updating invoice with id: " + id, e);
         } finally {
@@ -255,7 +267,9 @@ public class InvoiceCrudDao {
 
             session.remove(invoice);
             transaction.commit();
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
+            throw e;
+        }catch (Exception e) {
             if (transaction != null) transaction.rollback();
             throw new DAOException("Error while deleting invoice with id: " + id, e);
         } finally {

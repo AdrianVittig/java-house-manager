@@ -28,4 +28,9 @@ public class BaseEntity {
     public final int hashCode(){
         return org.hibernate.Hibernate.getClass(this).hashCode();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{id=" + getId() + "}";
+    }
 }

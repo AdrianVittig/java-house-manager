@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.university.util.PaymentStatus;
+import org.university.validators.ValidPayment;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,18 +19,39 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Payment extends BaseEntity{
+@ValidPayment
+public class Payment extends BaseEntity {
     @PositiveOrZero(message = "Amount cannot be negative")
     @NotNull(message = "Amount cannot be null")
     private BigDecimal amount;
     @NotNull(message = "Payment status cannot be null")
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
-    @NotNull(message = "Paid at cannot be null")
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime paidAt;
+
+    @PrePersist
+    private void prePersist() {
+        if (paidAt == null && paymentStatus == PaymentStatus.PAID) {
+            paidAt = LocalDateTime.now();
+        }
+    }
+
+
     @NotNull(message = "Invoice cannot be null")
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", nullable = false, unique = true)
     private Invoice invoice;
+
+    @Override
+    public String toString() {
+        Long invoiceId = (invoice != null ? invoice.getId() : null);
+
+        return "Payment{" +
+                "id=" + getId() +
+                ", amount=" + amount +
+                ", paymentStatus=" + paymentStatus +
+                ", paidAt=" + paidAt +
+                ", invoiceId=" + invoiceId +
+                '}';
+    }
 }

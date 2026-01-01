@@ -201,9 +201,20 @@ public class InvoiceCrudServiceImpl implements InvoiceCrudService {
 
     @Override
     public void updateInvoice(Long invoiceId, Invoice invoice) {
-        if(invoice == null || invoice.getId() == null){
+        if (invoiceId == null) {
+            throw new IllegalArgumentException("Invoice id cannot be null");
+        }
+        if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null");
         }
+
+        if (invoice.getId() != null && !invoiceId.equals(invoice.getId())) {
+            throw new IllegalArgumentException(
+                    "Invoice id mismatch: id=" + invoiceId + ", invoice.id=" + invoice.getId()
+            );
+        }
+
+        invoice.setId(invoiceId);
 
         invoiceDao.updateInvoice(invoiceId, invoice);
     }

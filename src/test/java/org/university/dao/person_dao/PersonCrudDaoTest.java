@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.university.configuration.SessionFactoryUtil;
 import org.university.entity.Person;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 
 import java.util.List;
 
@@ -104,7 +105,7 @@ class PersonCrudDaoTest {
         patchPerson.setLastName("Georgiev");
         patchPerson.setAge(31);
 
-        assertThrows(DAOException.class, () -> personCrudDao.updatePerson(999999L, patchPerson));
+        assertThrows(NotFoundException.class, () -> personCrudDao.updatePerson(999999L, patchPerson));
     }
 
     @Test
@@ -119,6 +120,6 @@ class PersonCrudDaoTest {
 
     @Test
     void deletePerson_whenMissing_throwsDAOException() {
-        assertThrows(DAOException.class, () -> personCrudDao.deletePerson(999999L));
+        assertThrows(NotFoundException.class, () -> personCrudDao.deletePerson(999999L));
     }
 }

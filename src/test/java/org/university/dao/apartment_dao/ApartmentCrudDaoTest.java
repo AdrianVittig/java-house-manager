@@ -2,11 +2,13 @@ package org.university.dao.apartment_dao;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.annotations.NotFound;
 import org.junit.jupiter.api.*;
 import org.university.configuration.SessionFactoryUtil;
 import org.university.entity.Apartment;
 import org.university.entity.Building;
 import org.university.exception.DAOException;
+import org.university.exception.NotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
