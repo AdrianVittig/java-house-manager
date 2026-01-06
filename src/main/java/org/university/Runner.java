@@ -38,6 +38,7 @@ import org.university.service.impl.person_service_impl.PersonCrudServiceImpl;
 import org.university.service.impl.report_service_impl.ReportServiceImpl;
 import org.university.service.impl.resident_service_impl.ResidentCrudServiceImpl;
 import org.university.util.PaymentStatus;
+import org.university.util.ResidentRole;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -531,12 +532,14 @@ public class Runner {
         String lastName = read("Last name: ");
         int age = readInt("Age: ");
         boolean usesElevator = readBoolean("Uses elevator? (true/false): ");
+        String role = read("Role: (OWNER, TENANT, FAMILY_MEMBER)").toUpperCase();
 
         Resident r = new Resident();
         r.setFirstName(firstName);
         r.setLastName(lastName);
         r.setAge(age);
         r.setUsesElevator(usesElevator);
+        r.setRole(role.equals("OWNER") ? ResidentRole.OWNER : role.equals("TENANT") ? ResidentRole.TENANT : ResidentRole.FAMILY_MEMBER);
 
         Apartment a = new Apartment();
         a.setId(apartmentId);
