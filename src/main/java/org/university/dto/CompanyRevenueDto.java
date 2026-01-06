@@ -15,4 +15,14 @@ public class CompanyRevenueDto {
     private Long companyId;
     private String companyName;
     private BigDecimal collectedFees;
+
+    @Override
+    public String toString() {
+        return "CompanyRevenueDto{" +
+                "companyId=" + companyId +
+                ", companyName='" + companyName + '\'' +
+                ", collectedFees=" + collectedFees +
+                '}';
+    }
+
 }

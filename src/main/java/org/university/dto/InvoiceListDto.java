@@ -34,4 +34,16 @@ public class InvoiceListDto {
 
     @NotNull(message = "Payment status cannot be null")
     private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
+
+    @Override
+    public String toString() {
+        return "InvoiceListDto{" +
+                "id=" + id +
+                ", billingMonth=" + billingMonth +
+                ", dueDate=" + dueDate +
+                ", totalAmount=" + totalAmount +
+                ", paymentStatus=" + paymentStatus +
+                '}';
+    }
+
 }

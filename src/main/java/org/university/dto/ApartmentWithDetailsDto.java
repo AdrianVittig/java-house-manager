@@ -35,4 +35,20 @@ public class ApartmentWithDetailsDto {
     private List<Long> residentIdsList = new ArrayList<>();
 
     private List<Long> invoiceIdsList = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "ApartmentWithDetailsDto{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", area=" + area +
+                ", hasPet=" + hasPet +
+                ", buildingId=" + buildingId +
+                ", residentIds(count)=" + (residentIdsList == null ? 0 : residentIdsList.size()) +
+                ", residentIds=" + residentIdsList +
+                ", invoiceIds(count)=" + (invoiceIdsList == null ? 0 : invoiceIdsList.size()) +
+                ", invoiceIds=" + invoiceIdsList +
+                '}';
+    }
+
 }

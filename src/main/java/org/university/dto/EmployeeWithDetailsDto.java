@@ -33,4 +33,21 @@ public class EmployeeWithDetailsDto {
     private Long companyId;
 
     private List<Long> contractIdsList;
+
+    @Override
+    public String toString() {
+        return "EmployeeWithDetailsDto{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", feeCollectingDate=" + feeCollectingDate +
+                ", companyId=" + companyId +
+                ", buildingIds(count)=" + (buildingIdsList == null ? 0 : buildingIdsList.size()) +
+                ", buildingIds=" + buildingIdsList +
+                ", contractIds(count)=" + (contractIdsList == null ? 0 : contractIdsList.size()) +
+                ", contractIds=" + contractIdsList +
+                '}';
+    }
+
 }

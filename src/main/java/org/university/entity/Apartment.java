@@ -11,7 +11,9 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "apartment")
@@ -30,14 +32,16 @@ public class Apartment extends BaseEntity{
     private boolean hasPet;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Resident> residentList = new ArrayList<>();
+    @OrderBy("id ASC")
+    private Set<Resident> residentList = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_id")
     private Building building;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Invoice> invoiceList = new ArrayList<>();
+    @OrderBy("id ASC")
+    private Set<Invoice> invoiceList = new HashSet<>();
 
     @Override
     public String toString() {

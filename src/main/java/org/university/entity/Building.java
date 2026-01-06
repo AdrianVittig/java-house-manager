@@ -11,7 +11,9 @@ import org.university.validators.NameRegex;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "building")
@@ -46,7 +48,8 @@ public class Building extends BaseEntity{
     private Employee employee;
 
     @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Apartment> apartmentList = new ArrayList<>();
+    @OrderBy("id ASC")
+    private Set<Apartment> apartmentList = new HashSet<>();
 
     @OneToOne(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Contract contract;

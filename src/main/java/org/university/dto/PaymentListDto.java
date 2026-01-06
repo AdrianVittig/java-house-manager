@@ -24,4 +24,15 @@ public class PaymentListDto {
     private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
     @NotNull(message = "Paid at cannot be null")
     private LocalDateTime paidAt;
+
+    @Override
+    public String toString() {
+        return "PaymentListDto{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", paymentStatus=" + paymentStatus +
+                ", paidAt=" + paidAt +
+                '}';
+    }
+
 }

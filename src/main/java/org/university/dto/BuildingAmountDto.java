@@ -16,4 +16,15 @@ public class BuildingAmountDto {
     private String buildingName;
     private String buildingAddress;
     private BigDecimal amount;
+
+    @Override
+    public String toString() {
+        return "BuildingAmountDto{" +
+                "buildingId=" + buildingId +
+                ", buildingName='" + buildingName + '\'' +
+                ", buildingAddress='" + buildingAddress + '\'' +
+                ", amount=" + amount +
+                '}';
+    }
+
 }

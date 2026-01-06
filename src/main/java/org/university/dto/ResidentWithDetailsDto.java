@@ -28,5 +28,17 @@ public class ResidentWithDetailsDto {
 
     private Long apartmentId;
 
+    @Override
+    public String toString() {
+        return "ResidentWithDetailsDto{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", usesElevator=" + usesElevator +
+                ", role=" + role +
+                ", apartmentId=" + apartmentId +
+                '}';
+    }
 
 }

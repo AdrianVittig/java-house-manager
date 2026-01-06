@@ -26,4 +26,17 @@ public class ContractWithDetailsDto {
     private Long buildingId;
 
     private Long employeeId;
+
+    @Override
+    public String toString() {
+        return "ContractWithDetailsDto{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", issueDate=" + issueDate +
+                ", endDate=" + endDate +
+                ", buildingId=" + buildingId +
+                ", employeeId=" + employeeId +
+                '}';
+    }
+
 }

@@ -24,4 +24,16 @@ public class CompanyWithDetailsDto {
     private BigDecimal revenue;
 
     private List<Long> employeeIdsList = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "CompanyWithDetailsDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", revenue=" + revenue +
+                ", employeeIds(count)=" + (employeeIdsList == null ? 0 : employeeIdsList.size()) +
+                ", employeeIds=" + employeeIdsList +
+                '}';
+    }
+
 }

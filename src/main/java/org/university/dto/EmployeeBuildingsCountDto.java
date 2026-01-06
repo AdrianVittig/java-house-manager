@@ -14,4 +14,15 @@ public class EmployeeBuildingsCountDto {
     private String firstName;
     private String lastName;
     private Long buildingsCount;
+
+    @Override
+    public String toString() {
+        return "EmployeeBuildingsCountDto{" +
+                "employeeId=" + employeeId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", buildingsCount=" + buildingsCount +
+                '}';
+    }
+
 }

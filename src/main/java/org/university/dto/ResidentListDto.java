@@ -26,4 +26,17 @@ public class ResidentListDto {
     private ResidentRole role;
 
     private boolean usesElevator;
+
+    @Override
+    public String toString() {
+        return "ResidentListDto{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", role=" + role +
+                ", usesElevator=" + usesElevator +
+                '}';
+    }
+
 }

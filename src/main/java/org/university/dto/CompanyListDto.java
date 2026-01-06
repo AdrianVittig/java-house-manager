@@ -20,4 +20,15 @@ public class CompanyListDto {
     private String name;
     @NotNull(message = "Company revenue cannot be null")
     private BigDecimal revenue;
+
+    @Override
+    public String toString() {
+        return "CompanyListDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", revenue=" + revenue +
+                '}';
+    }
+
+
 }

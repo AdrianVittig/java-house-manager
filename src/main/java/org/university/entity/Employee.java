@@ -9,7 +9,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "employee")
@@ -19,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Employee extends Person{
     @OneToMany(mappedBy = "employee")
-    private List<Building> buildingList = new ArrayList<>();
+    private Set<Building> buildingList = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
@@ -29,7 +31,7 @@ public class Employee extends Person{
     private LocalDate feeCollectingDate;
 
     @OneToMany(mappedBy = "employee")
-    private List<Contract> contractList = new ArrayList<>();
+    private Set<Contract> contractList = new HashSet<>();
 
     @Override
     public String toString() {

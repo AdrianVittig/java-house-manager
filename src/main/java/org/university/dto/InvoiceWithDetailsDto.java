@@ -41,4 +41,18 @@ public class InvoiceWithDetailsDto {
     private Long apartmentId;
 
     private Long paymentId;
+
+    @Override
+    public String toString() {
+        return "InvoiceWithDetailsDto{" +
+                "id=" + id +
+                ", billingMonth=" + billingMonth +
+                ", dueDate=" + dueDate +
+                ", totalAmount=" + totalAmount +
+                ", paymentStatus=" + paymentStatus +
+                ", apartmentId=" + apartmentId +
+                ", paymentId=" + paymentId +
+                '}';
+    }
+
 }

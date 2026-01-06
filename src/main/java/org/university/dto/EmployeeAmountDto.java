@@ -16,4 +16,15 @@ public class EmployeeAmountDto {
     private String firstName;
     private String lastName;
     private BigDecimal amount;
+
+    @Override
+    public String toString() {
+        return "EmployeeAmountDto{" +
+                "employeeId=" + employeeId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", amount=" + amount +
+                '}';
+    }
+
 }

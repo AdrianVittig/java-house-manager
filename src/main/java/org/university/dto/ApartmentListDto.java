@@ -27,4 +27,14 @@ public class ApartmentListDto {
 
     @NotNull(message = "Has pet cannot be null")
     private boolean hasPet;
+
+    @Override
+    public String toString() {
+        return "ApartmentListDto{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", area=" + area +
+                ", hasPet=" + hasPet +
+                '}';
+    }
 }

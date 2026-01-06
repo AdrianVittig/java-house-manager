@@ -23,4 +23,16 @@ public class EmployeeBuildingsManagementDto {
 
     @NotNull(message = "Contracts count cannot be null")
     private Integer contractsCount;
+
+    @Override
+    public String toString() {
+        return "EmployeeBuildingsManagementDto{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", contractsCount=" + contractsCount +
+                '}';
+    }
+
 }

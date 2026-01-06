@@ -27,4 +27,17 @@ public class EmployeeListDto {
 
     @NotNull(message = "Fee collecting date cannot be null")
     private LocalDate feeCollectingDate;
+
+    @Override
+    public String toString() {
+        return "EmployeeListDto{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", feeCollectingDate=" + feeCollectingDate +
+                '}';
+    }
+
+
 }

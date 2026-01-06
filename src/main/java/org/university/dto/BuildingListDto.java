@@ -35,4 +35,19 @@ public class BuildingListDto {
     private int apartmentsPerFloor;
     @NotNull(message = "Built date cannot be null")
     private LocalDate builtDate;
+
+    @Override
+    public String toString() {
+        return "BuildingListDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", builtUpArea=" + builtUpArea +
+                ", commonAreasPercentageOfBuiltUpArea=" + commonAreasPercentageOfBuiltUpArea +
+                ", countOfFloors=" + countOfFloors +
+                ", apartmentsPerFloor=" + apartmentsPerFloor +
+                ", builtDate=" + builtDate +
+                '}';
+    }
+
 }

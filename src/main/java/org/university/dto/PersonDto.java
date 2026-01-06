@@ -20,4 +20,15 @@ public class PersonDto {
     private String lastName;
     @NotNull(message = "Age cannot be null")
     private Integer age;
+
+    @Override
+    public String toString() {
+        return "PersonDto{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                '}';
+    }
+
 }

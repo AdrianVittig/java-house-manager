@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assumptions;
 import org.university.dto.FileDto;
+import org.university.util.PaymentStatus;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -67,7 +68,8 @@ class FileServiceImplTest {
                 "Address",
                 "Room: 1001",
                 new BigDecimal("99.99"),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                PaymentStatus.PAID
         );
 
         service.saveToFile(dto);
@@ -103,7 +105,8 @@ class FileServiceImplTest {
                 "Address",
                 "Room: 1002",
                 new BigDecimal("10.00"),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                PaymentStatus.PAID
         );
 
         service.saveToFile(dto);
@@ -120,15 +123,15 @@ class FileServiceImplTest {
         assertThrows(IllegalArgumentException.class, () -> service.saveToFile(null));
 
         FileDto dto = new FileDto(null, YearMonth.of(2025, 1), 1L, "c", "f", "l", "b", "a", "n",
-                new BigDecimal("1.00"), LocalDateTime.now());
+                new BigDecimal("1.00"), LocalDateTime.now(), PaymentStatus.PAID);
         assertThrows(IllegalArgumentException.class, () -> service.saveToFile(dto));
 
         FileDto dto2 = new FileDto(1L, null, 1L, "c", "f", "l", "b", "a", "n",
-                new BigDecimal("1.00"), LocalDateTime.now());
+                new BigDecimal("1.00"), LocalDateTime.now(), PaymentStatus.PAID);
         assertThrows(IllegalArgumentException.class, () -> service.saveToFile(dto2));
 
         FileDto dto3 = new FileDto(1L, YearMonth.of(2025, 1), null, "c", "f", "l", "b", "a", "n",
-                new BigDecimal("1.00"), LocalDateTime.now());
+                new BigDecimal("1.00"), LocalDateTime.now(), PaymentStatus.PAID);
         assertThrows(IllegalArgumentException.class, () -> service.saveToFile(dto3));
     }
 

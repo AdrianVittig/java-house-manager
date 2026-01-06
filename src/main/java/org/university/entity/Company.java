@@ -1,9 +1,6 @@
 package org.university.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -15,7 +12,9 @@ import org.university.validators.NameRegex;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "company")
@@ -31,7 +30,8 @@ public class Company extends BaseEntity{
     private BigDecimal revenue;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Employee> employeeList = new ArrayList<>();
+    @OrderBy("id ASC")
+    private Set<Employee> employeeList = new HashSet<>();
 
     @Override
     public String toString() {

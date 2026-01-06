@@ -44,4 +44,23 @@ public class BuildingWithDetailsDto {
     private List<Long> apartmentIdsList = new ArrayList<>();
 
     private Long contractId;
+
+    @Override
+    public String toString() {
+        return "BuildingWithDetailsDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", builtUpArea=" + builtUpArea +
+                ", commonAreasPercentageOfBuiltUpArea=" + commonAreasPercentageOfBuiltUpArea +
+                ", countOfFloors=" + countOfFloors +
+                ", apartmentsPerFloor=" + apartmentsPerFloor +
+                ", builtDate=" + builtDate +
+                ", employeeId=" + employeeId +
+                ", apartmentIds(count)=" + (apartmentIdsList == null ? 0 : apartmentIdsList.size()) +
+                ", apartmentIds=" + apartmentIdsList +
+                ", contractId=" + contractId +
+                '}';
+    }
+
 }

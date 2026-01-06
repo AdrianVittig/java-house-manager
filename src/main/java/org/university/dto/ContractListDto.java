@@ -22,4 +22,15 @@ public class ContractListDto {
     private LocalDate issueDate;
     @NotNull(message = "Contract end date cannot be null")
     private LocalDate endDate;
+
+    @Override
+    public String toString() {
+        return "ContractListDto{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", issueDate=" + issueDate +
+                ", endDate=" + endDate +
+                '}';
+    }
+
 }

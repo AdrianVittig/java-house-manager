@@ -27,4 +27,16 @@ public class PaymentWithDetailsDto {
     private LocalDateTime paidAt;
     @NotNull(message = "Invoice cannot be null")
     private Long invoiceId;
+
+    @Override
+    public String toString() {
+        return "PaymentWithDetailsDto{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", paymentStatus=" + paymentStatus +
+                ", paidAt=" + paidAt +
+                ", invoiceId=" + invoiceId +
+                '}';
+    }
+
 }
