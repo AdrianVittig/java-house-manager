@@ -27,7 +27,8 @@ public class Company extends BaseEntity{
     @NameRegex
     private String name;
 
-    private BigDecimal revenue;
+    @Column(scale = 2)
+    private BigDecimal revenue = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")

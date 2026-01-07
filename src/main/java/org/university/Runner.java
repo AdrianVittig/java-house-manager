@@ -532,7 +532,7 @@ public class Runner {
         String lastName = read("Last name: ");
         int age = readInt("Age: ");
         boolean usesElevator = readBoolean("Uses elevator? (true/false): ");
-        String role = read("Role: (OWNER, TENANT, FAMILY_MEMBER)").toUpperCase();
+        String role = read("Role: (OWNER, TENANT, FAMILY_MEMBER): ").toUpperCase();
 
         Resident r = new Resident();
         r.setFirstName(firstName);

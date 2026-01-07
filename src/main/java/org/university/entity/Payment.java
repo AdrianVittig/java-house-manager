@@ -22,9 +22,7 @@ import java.time.LocalDateTime;
 @ValidPayment
 public class Payment extends BaseEntity {
     @PositiveOrZero(message = "Amount cannot be negative")
-    @NotNull(message = "Amount cannot be null")
     private BigDecimal amount;
-    @NotNull(message = "Payment status cannot be null")
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
     private LocalDateTime paidAt;
